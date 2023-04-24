@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/saverecipe.css" type="text/css">
+</head>
+<body>
+
+<form action="http://localhost:8080/api/biteways/recipe/save" method="get">
+    <div id="container" class="container">
+
+        <div class="name_entry">
+            <label for="name"> name : </label>
+            <input name="name" id="name" type="text">
+        </div>
+
+
+        <div class="ingredients_textbox">
+            <label for="ingredients"> ingredients : </label>
+            <textarea name="ingredients" id="ingredients" cols="40" rows="10"></textarea>
+        </div>
+
+
+        <div class="instructions_textbox">
+            <label for="instructions"> name : </label>
+            <textarea name="instructions" id="instructions" cols="40" rows="10"></textarea>
+        </div>
+
+
+        <div class="submit_button">
+            <input type="submit" value="send recipe">
+        </div>
+    </div>
+
+    <div style="background-color: blue;width: 100px;height: 100px" id="json_list">
+        <script>
+            const URL="http://localhost:8080/api/biteways/recipe";
+
+            async function makeAPIcall(){
+                const result= await fetch(URL)
+                result.json().then(data=>{
+                    console.log(data[0]["name"])
+                    document.getElementById("json_list").innerHTML=data[0]["name"]
+                })
+            }
+            makeAPIcall()
+        </script>
+    </div>
+</form>
+</body>
+</html>

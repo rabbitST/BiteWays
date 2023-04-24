@@ -70,6 +70,11 @@ public class RecipeService {
         recipeDto.setId(recipe.getId());
         recipeDto.setName(recipe.getName());
         recipeDto.setDownloaded(recipe.getDownloaded());
+        recipeDto.setIngredients(setIngredientMap(recipe));
+        return recipeDto;
+    }
+
+    private static Map<String, Map<Float, UnitType>> setIngredientMap(Recipe recipe) {
         Map<String, Map<Float, UnitType>> ingredientList = recipe.getIngredientList()
                 .stream()
                 .collect(Collectors.toMap(
@@ -79,7 +84,6 @@ public class RecipeService {
                             quantityUnit.put(i.getQuantity(), i.getUnitType());
                             return quantityUnit;
                         }));
-        recipeDto.setIngredients(ingredientList);
-        return recipeDto;
+        return ingredientList;
     }
 }
