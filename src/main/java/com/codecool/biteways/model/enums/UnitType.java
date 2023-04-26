@@ -5,6 +5,6 @@ public enum UnitType {
     DKG,
     L,
     DL,
-    PACKAGE
-
+    PACKAGE,
+    UNIT
 }

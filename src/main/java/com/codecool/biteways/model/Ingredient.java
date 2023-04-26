@@ -1,6 +1,7 @@
 package com.codecool.biteways.model;
 
 import com.codecool.biteways.model.enums.UnitType;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class Ingredient {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id", nullable = true, foreignKey = @ForeignKey(name = "FK_INGREDIENT_RECIPE"))
+    @JsonBackReference
     private Recipe recipe;
     private Float quantity;
     @Enumerated(EnumType.STRING)

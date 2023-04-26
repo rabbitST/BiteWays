@@ -11,6 +11,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,14 +27,13 @@ public class RecipeService {
     }
 
     public Recipe saveRecipe(RawRecipe rawRecipe) {
-
-        Map<String, List<String>> result = new HashMap<>();
-        result.put("name", new ArrayList<>(Arrays.asList(rawRecipe.getName())));
-        result.put("ingredients", Arrays.stream(rawRecipe.getIngredients().split("\\r?\\n")).map(i -> i.replaceAll("[\t\r]", " ").trim()).toList());
-
-
-        result.put("preparation", Arrays.stream(rawRecipe.getPreparation().split("\\r?\\n")).map(i -> i.replaceAll("[\t\r]", " ").trim()).toList());
-        return null;
+        Recipe r = new Recipe();
+        r.setName(rawRecipe.getName());
+        r.setInstructions(rawRecipe.getInstructions());
+        r.setDownloaded(1);
+        recipeRepository.save(r);
+        r.setIngredientList(rawTextToIngredientList(rawRecipe, r));
+        return r;
     }
 
     public List<RecipeDto> findAllRecipe() {
@@ -44,14 +45,23 @@ public class RecipeService {
     }
 
     public RecipeDto findRecipeById(Long id) {
-        return recipeToDto(recipeRepository.findById(id).orElseThrow());
+        return this.recipeToDto(recipeRepository.findById(id).orElseThrow());
     }
 
     @Transactional
     public void updateRecipe(Long id, Recipe update) {
         Recipe recipe = recipeRepository.findById(id).orElseThrow();
         recipe.setName(update.getName());
-        recipe.setIngredientList(update.getIngredientList());
+        recipe.setInstructions(update.getInstructions());
+        update.
+                getIngredientList().
+                forEach(i -> {
+                    Ingredient savedIngredient = ingredientRepository.findById(i.getId()).orElseThrow();
+                    savedIngredient.setName(i.getName());
+                    savedIngredient.setQuantity(i.getQuantity());
+                    savedIngredient.setUnitType(i.getUnitType());
+                    savedIngredient.setRecipe(recipe);
+                });
     }
 
     public void deleteRecipe(Long id) {
@@ -75,7 +85,8 @@ public class RecipeService {
     }
 
     private static Map<String, Map<Float, UnitType>> setIngredientMap(Recipe recipe) {
-        Map<String, Map<Float, UnitType>> ingredientList = recipe.getIngredientList()
+        return recipe.
+                getIngredientList()
                 .stream()
                 .collect(Collectors.toMap(
                         Ingredient::getName,
@@ -84,6 +95,40 @@ public class RecipeService {
                             quantityUnit.put(i.getQuantity(), i.getUnitType());
                             return quantityUnit;
                         }));
+    }
+
+    public List<Ingredient> rawTextToIngredientList(RawRecipe rawRecipe, Recipe recipe) {
+        List<Ingredient> ingredientList = new ArrayList<>();
+        processIngredients(rawRecipe, recipe, ingredientList);
         return ingredientList;
+    }
+
+    private void processIngredients(RawRecipe rawRecipe, Recipe recipe, List<Ingredient> ingredientList) {
+        String[] lines = rawRecipe.getIngredients().split("\n");
+        for (String line : lines) {
+            Ingredient newIngredient = new Ingredient();
+            processIngredientLine(recipe, line, newIngredient);
+            ingredientRepository.save(newIngredient);
+            ingredientList.add(newIngredient);
+        }
+    }
+
+    private static void processIngredientLine(Recipe recipe, String line, Ingredient newIngredient) {
+        Matcher matcher = Pattern.compile("^([0-9]+[A-Za-z]+)\\b").matcher(line);
+        if (matcher.find()) {
+            String ingredientName = line.substring(matcher.end()).trim();
+            Float quantity = Float.valueOf(matcher.group().replaceAll("\\D", ""));
+            UnitType unitType = UnitType.valueOf(matcher.group().replaceAll("\\d", "").toUpperCase());
+            setIngredientProperties(newIngredient, recipe, ingredientName, quantity, unitType);
+        } else {
+            setIngredientProperties(newIngredient, recipe, line.trim(), 1f, UnitType.UNIT);
+        }
+    }
+
+    private static void setIngredientProperties(Ingredient newIngredient, Recipe recipe, String ingredientName, Float quantity, UnitType unitType) {
+        newIngredient.setName(ingredientName);
+        newIngredient.setRecipe(recipe);
+        newIngredient.setQuantity(quantity);
+        newIngredient.setUnitType(unitType);
     }
 }

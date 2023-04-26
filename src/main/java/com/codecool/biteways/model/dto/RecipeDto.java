@@ -17,8 +17,9 @@ import java.util.Objects;
 public class RecipeDto {
     private Long id;
     private String name;
-    private Map<String, Map<Float, UnitType>> ingredients = new HashMap<>();
     private int downloaded;
+    private String instructions;
+    private Map<String, Map<Float, UnitType>> ingredients = new HashMap<>();
 
     @Override
     public String toString() {

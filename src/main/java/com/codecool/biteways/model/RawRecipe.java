@@ -6,7 +6,7 @@ import lombok.Data;
 public class RawRecipe {
 
     private final String name;
-    private final String preparation;
+    private final String instructions;
     private final String ingredients;
 
 }

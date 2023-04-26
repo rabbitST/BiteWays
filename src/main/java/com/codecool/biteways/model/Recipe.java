@@ -21,17 +21,16 @@ public class Recipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-
+    private int downloaded;
+    private String instructions;
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
-    @JsonBackReference
     List<Ingredient> ingredientList;
 
-    private int downloaded;
-
-    public Recipe(String name, List<Ingredient> ingredientList, int downloaded) {
+    public Recipe(String name, int downloaded, String instructions, List<Ingredient> ingredientList) {
         this.name = name;
-        this.ingredientList = ingredientList;
         this.downloaded = downloaded;
+        this.instructions = instructions;
+        this.ingredientList = ingredientList;
     }
 
     @Override

@@ -57,6 +57,8 @@ public class IngredientService {
         ingredientDto.setId(ingredient.getId());
         ingredientDto.setName(ingredient.getName());
         ingredientDto.setRecipeName(ingredient.getRecipe().getName());
+        ingredientDto.setQuantity(ingredient.getQuantity());
+        ingredientDto.setUnitType(ingredient.getUnitType());
         return ingredientDto;
     }
 
