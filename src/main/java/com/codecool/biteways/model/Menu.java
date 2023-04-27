@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -32,4 +33,25 @@ public class Menu {
     )
     private List<Recipe> recipeList=new ArrayList<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Menu menu = (Menu) o;
+        return Objects.equals(name, menu.name) && Objects.equals(recipeList, menu.recipeList);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, recipeList);
+    }
+
+    @Override
+    public String toString() {
+        return "Menu{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", recipeList=" + recipeList +
+                '}';
+    }
 }
