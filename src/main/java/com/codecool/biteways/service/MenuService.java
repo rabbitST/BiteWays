@@ -34,8 +34,8 @@ public class MenuService {
         return menu;
     }
 
-    public void saveMenu(Menu menu) {
-        menuRepository.save(menu);
+    public Menu saveMenu(Menu menu) {
+        return menuRepository.save(menu);
     }
 
     public List<Menu> findAllMenu() {
