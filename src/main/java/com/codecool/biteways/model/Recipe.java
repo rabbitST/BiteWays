@@ -1,21 +1,21 @@
 package com.codecool.biteways.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "recipe")
+@Entity
 public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +25,8 @@ public class Recipe {
     private String instructions;
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     List<Ingredient> ingredientList;
+    @ManyToMany(mappedBy = "recipeList")
+    private List<Menu> menuList=new ArrayList<>();
 
     public Recipe(String name, int downloaded, String instructions, List<Ingredient> ingredientList) {
         this.name = name;
