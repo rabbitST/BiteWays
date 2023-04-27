@@ -6,7 +6,6 @@ import com.codecool.biteways.repository.MenuRepository;
 import com.codecool.biteways.repository.RecipeRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 
 @Service

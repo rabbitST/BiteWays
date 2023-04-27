@@ -3,7 +3,6 @@ package com.codecool.biteways.controller;
 import com.codecool.biteways.model.Menu;
 import com.codecool.biteways.service.MenuService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
