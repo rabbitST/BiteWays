@@ -47,7 +47,7 @@ public class IngredientController {
             }
     )
     @GetMapping
-    public List<IngredientDto> findAllRecipeIngredient() {
+    public List<IngredientDto> findAllIngredient() {
         return ingredientService.findAllIngredient();
     }
 

@@ -37,6 +37,10 @@ public class Ingredient {
         this.unitType = unitType;
     }
 
+    public Ingredient(String name) {
+        this.name = name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
