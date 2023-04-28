@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/biteways/menu")
-@Tag(name = "Menu CRUD operations")
+@Tag(name = "Menu Controller", description = "API endpoints for managing Menus")
 @Log4j2
 public class MenuController {
 
