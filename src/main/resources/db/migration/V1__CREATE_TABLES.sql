@@ -25,6 +25,7 @@ CREATE TABLE recipe
 (
     id         SERIAL PRIMARY KEY,
     name       VARCHAR(255),
+    instructions VARCHAR(600),
     downloaded INT
 );
 
@@ -48,7 +49,6 @@ CREATE  TABLE menu_recipe(
     menu_id BIGINT,
     recipe_id BIGINT
 );
-
 
 ALTER TABLE ingredient ADD CONSTRAINT FK_INGREDIENT_RECIPE FOREIGN KEY (RECIPE_ID) REFERENCES recipe (id);
 -- ALTER TABLE ingredient DROP CONSTRAINT IF EXISTS FK_RECIPEID_RECIPE;
