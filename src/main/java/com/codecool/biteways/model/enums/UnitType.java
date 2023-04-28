@@ -6,5 +6,9 @@ public enum UnitType {
     L,
     DL,
     PACKAGE,
+    TSP,
+    TABLESPOON,
+    TEASPOON,
+    TSPN,
     UNIT
 }

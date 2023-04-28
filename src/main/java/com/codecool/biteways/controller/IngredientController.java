@@ -35,8 +35,8 @@ public class IngredientController {
             }
     )
     @PostMapping
-    public void saveIngredient(@RequestBody Ingredient ingredient) {
-        ingredientService.saveIngredient(ingredient);
+    public Ingredient saveIngredient(@RequestBody Ingredient ingredient) {
+        return ingredientService.saveIngredient(ingredient);
     }
 
     @Operation(
