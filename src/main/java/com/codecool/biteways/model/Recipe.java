@@ -1,5 +1,6 @@
 package com.codecool.biteways.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +27,7 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     List<Ingredient> ingredientList;
     @ManyToMany(mappedBy = "recipeList")
+    @JsonIgnore
     private List<Menu> menuList=new ArrayList<>();
 
     public Recipe(String name, int downloaded, String instructions, List<Ingredient> ingredientList) {
