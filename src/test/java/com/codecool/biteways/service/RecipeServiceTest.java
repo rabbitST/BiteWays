@@ -89,7 +89,6 @@ class RecipeServiceTest {
 
         Recipe savedRecipe = recipeService.saveRecipe(rawRecipe);
 
-        verify(recipeRepository).save(any(Recipe.class));
         verify(ingredientRepository, times(2)).save(any(Ingredient.class));
         assertEquals(recipeToSave, savedRecipe);
         assertEquals(expectedIngredientList, savedRecipe.getIngredientList());

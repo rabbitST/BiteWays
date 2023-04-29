@@ -28,11 +28,12 @@ public class RecipeService {
 
     public Recipe saveRecipe(RawRecipe rawRecipe) {
         Recipe r = new Recipe();
+        recipeRepository.save(r);
         r.setName(rawRecipe.getName());
         r.setInstructions(rawRecipe.getInstructions());
         r.setDownloaded(1);
-        recipeRepository.save(r);
         r.setIngredientList(rawTextToIngredientList(rawRecipe, r));
+        recipeRepository.save(r);
         return r;
     }
 
@@ -44,8 +45,8 @@ public class RecipeService {
                 .collect(Collectors.toList());
     }
 
-    public RecipeDto findRecipeById(Long id) {
-        return this.recipeToDto(recipeRepository.findById(id).orElseThrow());
+    public RecipeDto findRecipeById(Long id) throws NoSuchElementException{
+        return this.recipeToDto(recipeRepository.findById(id).orElseThrow(NoSuchElementException::new));
     }
 
     @Transactional
@@ -66,7 +67,7 @@ public class RecipeService {
     }
 
     public void deleteRecipe(Long id) {
-        Recipe recipe = recipeRepository.findById(id).orElseThrow();
+        Recipe recipe = recipeRepository.findById(id).orElseThrow(NoSuchElementException::new);
         recipe.
                 getIngredientList().
                 forEach(i -> {
@@ -81,6 +82,7 @@ public class RecipeService {
         recipeDto.setId(recipe.getId());
         recipeDto.setName(recipe.getName());
         recipeDto.setDownloaded(recipe.getDownloaded());
+        recipeDto.setInstructions(recipe.getInstructions());
         recipeDto.setIngredients(setIngredientMap(recipe));
         return recipeDto;
     }
