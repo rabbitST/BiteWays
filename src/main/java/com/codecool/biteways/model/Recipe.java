@@ -51,13 +51,14 @@ public class Recipe {
     }
 
     @Override
-    public String
-    toString() {
+    public String toString() {
         return "Recipe{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", ingredientList=" + ingredientList +
                 ", downloaded=" + downloaded +
+                ", instructions='" + instructions + '\'' +
+                ", ingredientList=" + ingredientList +
+                ", menuList=" + menuList +
                 '}';
     }
 }

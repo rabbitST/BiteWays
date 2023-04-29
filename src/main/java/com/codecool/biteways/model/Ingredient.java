@@ -2,6 +2,7 @@ package com.codecool.biteways.model;
 
 import com.codecool.biteways.model.enums.UnitType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,7 +25,7 @@ public class Ingredient {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id", nullable = true, foreignKey = @ForeignKey(name = "FK_INGREDIENT_RECIPE"))
-    @JsonBackReference
+    @JsonIgnore
     private Recipe recipe;
     private Float quantity;
     @Enumerated(EnumType.STRING)
@@ -46,12 +47,12 @@ public class Ingredient {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Ingredient that = (Ingredient) o;
-        return Objects.equals(name, that.name) && Objects.equals(recipe, that.recipe) && Objects.equals(quantity, that.quantity) && unitType == that.unitType;
+        return Objects.equals(name, that.name) && Objects.equals(quantity, that.quantity) && unitType == that.unitType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, recipe, quantity, unitType);
+        return Objects.hash(name, quantity, unitType);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class Ingredient {
         return "Ingredient{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", recipe=" + recipe +
+                ", recipe=" + recipe.getName() +
                 ", quantity=" + quantity +
                 ", unitType=" + unitType +
                 '}';

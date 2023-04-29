@@ -49,7 +49,7 @@ public class RecipeService {
     }
 
     @Transactional
-    public void updateRecipe(Long id, Recipe update) {
+    public Recipe updateRecipe(Long id, Recipe update) {
         Recipe recipe = recipeRepository.findById(id).orElseThrow();
         recipe.setName(update.getName());
         recipe.setInstructions(update.getInstructions());
@@ -62,6 +62,7 @@ public class RecipeService {
                     savedIngredient.setUnitType(i.getUnitType());
                     savedIngredient.setRecipe(recipe);
                 });
+        return recipe;
     }
 
     public void deleteRecipe(Long id) {

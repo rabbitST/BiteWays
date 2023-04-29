@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class RawRecipe {
 
-    private final String name;
-    private final String instructions;
-    private final String ingredients;
+    private String name;
+    private String instructions;
+    private String ingredients;
 
 }

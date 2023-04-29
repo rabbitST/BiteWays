@@ -8,7 +8,9 @@ public enum UnitType {
     PACKAGE,
     TSP,
     TABLESPOON,
+    TBSP,
     TEASPOON,
     TSPN,
+    CUP,
     UNIT
 }

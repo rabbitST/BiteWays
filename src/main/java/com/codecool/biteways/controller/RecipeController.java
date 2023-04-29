@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,8 +36,9 @@ public class RecipeController {
                     @ApiResponse(responseCode = "400", description = "Invalid input data.")
             }
     )
-    @GetMapping("/save")
-    public Recipe saveRecipe(@ModelAttribute RawRecipe rawRecipe) {
+
+    @PostMapping
+    public Recipe saveRecipe(@RequestBody RawRecipe rawRecipe) {
         return recipeService.saveRecipe(rawRecipe);
     }
 
@@ -85,11 +87,11 @@ public class RecipeController {
             }
     )
     @PutMapping(value = "/{id}")
-    public void updateRecipeById(
+    public Recipe updateRecipeById(
             @PathVariable("id") Long id,
             @RequestBody Recipe recipe
     ) {
-        recipeService.updateRecipe(id, recipe);
+       return recipeService.updateRecipe(id, recipe);
     }
 
     @Operation(
