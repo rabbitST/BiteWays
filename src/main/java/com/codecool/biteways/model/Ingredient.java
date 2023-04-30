@@ -1,9 +1,10 @@
 package com.codecool.biteways.model;
 
 import com.codecool.biteways.model.enums.UnitType;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,16 +19,26 @@ import java.util.Objects;
 @AllArgsConstructor
 @Table(name = "ingredient")
 public class Ingredient {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Please provide a name for the ingredient.")
+    @Size(min = 3, max = 30, message = "Please enter an ingredient name that is between 3 and 30 characters in length.")
+    @Pattern(regexp = "^[a-zA-Z0-9\\-\\s]*$", message = "The ingredient name can only contain letters, numbers, and hyphens.")
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipe_id", nullable = true, foreignKey = @ForeignKey(name = "FK_INGREDIENT_RECIPE"))
+    @JoinColumn(name = "recipe_id", foreignKey = @ForeignKey(name = "FK_INGREDIENT_RECIPE"))
     @JsonIgnore
+    @Valid
     private Recipe recipe;
+
+    @Digits(integer = 10, fraction = 2, message = "The quantity should be a numeric value with up to 2 decimal places.")
     private Float quantity;
+
+    @NotNull(message = "Please select a valid unit type.")
     @Enumerated(EnumType.STRING)
     private UnitType unitType;
 

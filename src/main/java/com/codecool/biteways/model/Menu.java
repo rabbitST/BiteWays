@@ -1,6 +1,10 @@
 package com.codecool.biteways.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +24,10 @@ public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotBlank(message = "Please provide a name for the menu.")
+    @Size(min = 3, max = 30, message = "Please enter a menu name that is between 3 and 30 characters in length.")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s\\-.]*$", message = "The menu name can only contain letters, numbers, hyphens, spaces.")
     private String name;
 
     @ManyToMany(cascade = {
@@ -29,6 +37,7 @@ public class Menu {
             joinColumns = @JoinColumn(name="menu_id"),
             inverseJoinColumns = @JoinColumn(name="recipe_id")
     )
+    @Valid
     private List<Recipe> recipeList=new ArrayList<>();
 
 
