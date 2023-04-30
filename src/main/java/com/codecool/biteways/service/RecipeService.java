@@ -8,6 +8,7 @@ import com.codecool.biteways.model.enums.UnitType;
 import com.codecool.biteways.repository.IngredientRepository;
 import com.codecool.biteways.repository.RecipeRepository;
 import jakarta.transaction.Transactional;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -78,27 +79,10 @@ public class RecipeService {
     }
 
     public RecipeDto recipeToDto(Recipe recipe) {
-        RecipeDto recipeDto = new RecipeDto();
-        recipeDto.setId(recipe.getId());
-        recipeDto.setName(recipe.getName());
-        recipeDto.setDownloaded(recipe.getDownloaded());
-        recipeDto.setInstructions(recipe.getInstructions());
-        recipeDto.setIngredients(setIngredientMap(recipe));
-        return recipeDto;
+        return new ModelMapper().map(recipe, RecipeDto.class);
     }
 
-    private static Map<String, Map<Float, UnitType>> setIngredientMap(Recipe recipe) {
-        return recipe.
-                getIngredientList()
-                .stream()
-                .collect(Collectors.toMap(
-                        Ingredient::getName,
-                        i -> {
-                            Map<Float, UnitType> quantityUnit = new HashMap<>();
-                            quantityUnit.put(i.getQuantity(), i.getUnitType());
-                            return quantityUnit;
-                        }));
-    }
+
 
     public List<Ingredient> rawTextToIngredientList(RawRecipe rawRecipe, Recipe recipe) {
         List<Ingredient> ingredientList = new ArrayList<>();
@@ -110,6 +94,7 @@ public class RecipeService {
         String[] lines = rawRecipe.getIngredients().split("\n");
         for (String line : lines) {
             Ingredient newIngredient = new Ingredient();
+            newIngredient.setRecipe(recipe);
             processIngredientLine(recipe, line, newIngredient);
             ingredientRepository.save(newIngredient);
             ingredientList.add(newIngredient);
@@ -130,7 +115,6 @@ public class RecipeService {
 
     private static void setIngredientProperties(Ingredient newIngredient, Recipe recipe, String ingredientName, Float quantity, UnitType unitType) {
         newIngredient.setName(ingredientName);
-        newIngredient.setRecipe(recipe);
         newIngredient.setQuantity(quantity);
         newIngredient.setUnitType(unitType);
     }

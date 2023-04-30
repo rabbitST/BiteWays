@@ -1,13 +1,13 @@
 package com.codecool.biteways.model.dto;
 
-import com.codecool.biteways.model.enums.UnitType;
+import com.codecool.biteways.model.Ingredient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -19,28 +19,29 @@ public class RecipeDto {
     private String name;
     private int downloaded;
     private String instructions;
-    private Map<String, Map<Float, UnitType>> ingredients = new HashMap<>();
-
-    @Override
-    public String toString() {
-        return "RecipeDto{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", ingredients=" + ingredients +
-                ", downloaded=" + downloaded +
-                '}';
-    }
+    private List<Ingredient> ingredientList = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RecipeDto recipeDto = (RecipeDto) o;
-        return downloaded == recipeDto.downloaded && Objects.equals(name, recipeDto.name) && Objects.equals(ingredients, recipeDto.ingredients);
+        return downloaded == recipeDto.downloaded && Objects.equals(name, recipeDto.name) && Objects.equals(instructions, recipeDto.instructions) && Objects.equals(ingredientList, recipeDto.ingredientList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, ingredients, downloaded);
+        return Objects.hash(name, downloaded, instructions, ingredientList);
+    }
+
+    @Override
+    public String toString() {
+        return "RecipeDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", downloaded=" + downloaded +
+                ", instructions='" + instructions + '\'' +
+                ", ingredientList=" + ingredientList +
+                '}';
     }
 }

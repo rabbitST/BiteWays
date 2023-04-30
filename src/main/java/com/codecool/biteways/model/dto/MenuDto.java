@@ -1,5 +1,6 @@
 package com.codecool.biteways.model.dto;
 
+import com.codecool.biteways.model.Recipe;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -10,6 +11,6 @@ public class MenuDto {
 
     private Long id;
     private String name;
-    private List<String> recipes = new ArrayList<>();
+    private List<Recipe> recipeList=new ArrayList<>();
 
 }

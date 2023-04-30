@@ -1,25 +1,7 @@
-DROP TABLE IF EXISTS chef;
-DROP TABLE IF EXISTS customer;
 DROP TABLE IF EXISTS ingredient;
 DROP TABLE IF EXISTS recipe;
 DROP TABLE IF EXISTS menu;
 DROP TABLE IF EXISTS menu_recipe;
-
-
-CREATE TABLE chef
-(
-    id           SERIAL PRIMARY KEY,
-    name         VARCHAR(255),
-    chef_account INT
-);
-
-CREATE TABLE customer
-(
-    id      SERIAL PRIMARY KEY,
-    name    VARCHAR(255),
-    address VARCHAR(255)
-);
-
 
 CREATE TABLE recipe
 (

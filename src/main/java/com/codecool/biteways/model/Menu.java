@@ -23,7 +23,6 @@ public class Menu {
     private String name;
 
     @ManyToMany(cascade = {
-            CascadeType.PERSIST,
             CascadeType.MERGE
     })
     @JoinTable(name="menu_recipe",
@@ -31,6 +30,7 @@ public class Menu {
             inverseJoinColumns = @JoinColumn(name="recipe_id")
     )
     private List<Recipe> recipeList=new ArrayList<>();
+
 
     @Override
     public boolean equals(Object o) {

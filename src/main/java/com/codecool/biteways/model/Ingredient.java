@@ -60,7 +60,7 @@ public class Ingredient {
         return "Ingredient{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", recipe=" + recipe.getName() +
+                ", recipe=" + recipe +
                 ", quantity=" + quantity +
                 ", unitType=" + unitType +
                 '}';

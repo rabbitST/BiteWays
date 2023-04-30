@@ -21,7 +21,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -158,12 +157,11 @@ class RecipeServiceTest {
         assertEquals(recipe1.getId(), recipeDto.getId());
         assertEquals(recipe1.getName(), recipeDto.getName());
         assertEquals(recipe1.getDownloaded(), recipeDto.getDownloaded());
-        assertEquals(2, recipeDto.getIngredients().size());
-        assertTrue(recipeDto.getIngredients().containsKey("flour"));
-        assertTrue(recipeDto.getIngredients().get("flour").containsKey(500F));
-        assertTrue(recipeDto.getIngredients().containsKey("milk"));
-        assertTrue(recipeDto.getIngredients().get("milk").containsKey(1F));
+        assertEquals(2, recipeDto.getIngredientList().size());
+        List<String> ingredientNames = recipeDto.getIngredientList().stream().map(Ingredient::getName).toList();
 
+        assertThat(ingredientNames).contains(recipe1.getIngredientList().get(0).getName());
+        assertThat(ingredientNames).contains(recipe1.getIngredientList().get(1).getName());
     }
 
 }

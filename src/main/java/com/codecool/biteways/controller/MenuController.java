@@ -100,7 +100,7 @@ public class MenuController {
             }
     )
     @GetMapping(value = "/createmenu")
-    public MenuDto createMenu() {
+    public Menu createMenu() {
         return menuService.createMenu();
     }
 

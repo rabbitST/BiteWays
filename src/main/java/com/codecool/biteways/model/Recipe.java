@@ -58,7 +58,6 @@ public class Recipe {
                 ", downloaded=" + downloaded +
                 ", instructions='" + instructions + '\'' +
                 ", ingredientList=" + ingredientList +
-                ", menuList=" + menuList +
                 '}';
     }
 }

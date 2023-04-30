@@ -52,7 +52,7 @@ public class MenuService {
         menuRepository.deleteById(id);
     }
 
-    public MenuDto createMenu() {
+    public Menu createMenu() {
         Menu menu = new Menu();
         menu.setName(createMenuName());
         List<Recipe> recipes = recipeRepository.findAll();
@@ -64,7 +64,7 @@ public class MenuService {
                 stream().
                 sorted(Comparator.comparingLong(Recipe::getId))
                 .toList());
-        return menuToMenuDto(menu);
+        return menu;
     }
 
     private String createMenuName() {
@@ -74,7 +74,7 @@ public class MenuService {
         return menuName.toString();
     }
 
-    private static StringBuilder buildMenuName(LocalDate today, LocalDate todayPlus7Day) {
+    public StringBuilder buildMenuName(LocalDate today, LocalDate todayPlus7Day) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM.dd");
         StringBuilder menuName = new StringBuilder();
         menuName.append("Menu offer from ");
@@ -85,13 +85,7 @@ public class MenuService {
     }
 
     public MenuDto menuToMenuDto(Menu m) {
-        MenuDto menuDto = new ModelMapper().map(m, MenuDto.class);
-        menuDto.setRecipes(m.getRecipeList().
-                stream().
-                map(Recipe::getName).
-                toList()
-        );
-        return menuDto;
+        return new ModelMapper().map(m, MenuDto.class);
     }
 
 }
