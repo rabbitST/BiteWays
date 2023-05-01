@@ -3,29 +3,30 @@ package com.codecool.biteways.controller;
 import com.codecool.biteways.model.RawRecipe;
 import com.codecool.biteways.model.Recipe;
 import com.codecool.biteways.model.dto.RecipeDto;
-import com.codecool.biteways.repository.RecipeRepository;
 import com.codecool.biteways.service.RecipeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/biteways/recipe")
 @Tag(name = "Recipe Controller", description = "API endpoints for managing Recipes")
 @Log4j2
 public class RecipeController {
-    private final RecipeRepository recipeRepository;
 
     private final RecipeService recipeService;
 
-    public RecipeController(RecipeService recipeService,
-                            RecipeRepository recipeRepository) {
+    public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
-        this.recipeRepository = recipeRepository;
     }
 
     @Operation(
@@ -35,15 +36,15 @@ public class RecipeController {
                     @ApiResponse(responseCode = "400", description = "Invalid input data.")
             }
     )
-
     @PostMapping
-    public Recipe saveRecipe(@RequestBody RawRecipe rawRecipe) {
-        return recipeService.saveRecipe(rawRecipe);
-    }
-
-    @GetMapping(value = "/saveform")
-    public String displayForm() {
-        return "/RecipeForm";
+    public ResponseEntity<?> saveRecipe(@Valid @RequestBody RawRecipe rawRecipe, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errors);
+        } else {
+            Recipe savedRecipe = recipeService.saveRecipe(rawRecipe);
+            return ResponseEntity.ok(savedRecipe);
+        }
     }
 
     @Operation(
@@ -56,13 +57,6 @@ public class RecipeController {
     @GetMapping
     public List<RecipeDto> findAllRecipe() {
         return recipeService.findAllRecipe();
-    }
-
-    @GetMapping(value = "/byid/{id}")
-    public Recipe getRecipeById(
-            @PathVariable("id") Long id
-    ) {
-        return recipeRepository.findById(id).orElseThrow();
     }
 
     @Operation(
@@ -86,11 +80,18 @@ public class RecipeController {
             }
     )
     @PutMapping(value = "/{id}")
-    public Recipe updateRecipeById(
+    public ResponseEntity<?> updateRecipeById(
             @PathVariable("id") Long id,
-            @RequestBody Recipe recipe
+            @Valid @RequestBody Recipe recipe,
+            BindingResult bindingResult
     ) {
-        return recipeService.updateRecipe(id, recipe);
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errors);
+        } else {
+            Recipe updatedRecipe = recipeService.updateRecipe(id, recipe);
+            return ResponseEntity.ok(updatedRecipe);
+        }
     }
 
     @Operation(

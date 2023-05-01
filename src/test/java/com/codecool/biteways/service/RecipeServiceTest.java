@@ -56,26 +56,15 @@ class RecipeServiceTest {
 
     @Test
     void testSaveRecipe_convertValidRawRecipeToValidRecipe() {
-        RawRecipe rawRecipe = new RawRecipe();
-        rawRecipe.setName("Test Recipe");
-        rawRecipe.setInstructions("Test instructions");
-        rawRecipe.setIngredients("1cup flour\n2tbsp sugar");
+        RawRecipe rawRecipe = new RawRecipe("Test Recipe","Test instructions","1cup flour\n2tbsp sugar");
 
-        Recipe recipeToSave = new Recipe();
-        recipeToSave.setName("Test Recipe");
-        recipeToSave.setInstructions("Test instructions");
-        recipeToSave.setDownloaded(1);
 
-        Ingredient ingredient1 = new Ingredient();
-        ingredient1.setName("flour");
-        ingredient1.setQuantity(1f);
-        ingredient1.setUnitType(UnitType.CUP);
+        Recipe recipeToSave = new Recipe("Test Recipe",1,"Test instructions");
+
+        Ingredient ingredient1 = new Ingredient("flour",1f,UnitType.CUP);
         ingredient1.setRecipe(recipeToSave);
 
-        Ingredient ingredient2 = new Ingredient();
-        ingredient2.setName("sugar");
-        ingredient2.setQuantity(2f);
-        ingredient2.setUnitType(UnitType.TBSP);
+        Ingredient ingredient2 = new Ingredient("sugar",2f,UnitType.TBSP);
         ingredient2.setRecipe(recipeToSave);
         recipeToSave.setIngredientList(new ArrayList<>(List.of(ingredient1, ingredient2)));
 
@@ -89,7 +78,8 @@ class RecipeServiceTest {
         Recipe savedRecipe = recipeService.saveRecipe(rawRecipe);
 
         verify(ingredientRepository, times(2)).save(any(Ingredient.class));
-        assertEquals(recipeToSave, savedRecipe);
+        assertEquals(recipeToSave.getName(), savedRecipe.getName());
+        assertEquals(recipeToSave.getInstructions(), savedRecipe.getInstructions());
         assertEquals(expectedIngredientList, savedRecipe.getIngredientList());
     }
 

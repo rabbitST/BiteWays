@@ -1,6 +1,5 @@
 package com.codecool.biteways.controller;
 
-
 import com.codecool.biteways.exceptions.RecordNotFoundException;
 import com.codecool.biteways.model.Ingredient;
 import com.codecool.biteways.model.dto.IngredientDto;
@@ -8,12 +7,16 @@ import com.codecool.biteways.service.IngredientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/biteways/ingredient")
@@ -35,8 +38,14 @@ public class IngredientController {
             }
     )
     @PostMapping
-    public Ingredient saveIngredient(@RequestBody Ingredient ingredient) {
-        return ingredientService.saveIngredient(ingredient);
+    public ResponseEntity<?> saveIngredient(@Valid @RequestBody Ingredient ingredient, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errors);
+        } else {
+            Ingredient savedIngredient = ingredientService.saveIngredient(ingredient);
+            return ResponseEntity.ok(savedIngredient);
+        }
     }
 
     @Operation(
@@ -74,11 +83,19 @@ public class IngredientController {
             }
     )
     @PutMapping("/{id}")
-    public Ingredient updateIngredient(
+    public ResponseEntity<?> updateIngredient(
             @PathVariable("id") Long id,
-            @RequestBody IngredientDto ingredientDto
+            @Valid @RequestBody IngredientDto ingredientDto,
+            BindingResult bindingResult
     ) throws RecordNotFoundException {
-        return ingredientService.updateIngredient(id, ingredientDto);
+        System.out.println(ingredientDto);
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errors);
+        } else {
+            Ingredient updatedIngredient = ingredientService.updateIngredient(id, ingredientDto);
+            return ResponseEntity.ok(updatedIngredient);
+        }
     }
 
     @Operation(

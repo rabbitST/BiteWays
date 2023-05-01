@@ -5,12 +5,14 @@ public enum UnitType {
     DKG,
     L,
     DL,
-    PACKAGE,
     TSP,
     TABLESPOON,
     TBSP,
     TEASPOON,
     TSPN,
     CUP,
+    PC,
+    PCS,
+    PACKAGE,
     UNIT
 }

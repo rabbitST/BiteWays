@@ -6,9 +6,15 @@ import com.codecool.biteways.service.MenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/biteways/menu")
@@ -31,8 +37,14 @@ public class MenuController {
             }
     )
     @PostMapping
-    public MenuDto saveMenu(@RequestBody Menu menu) {
-        return menuService.saveMenu(menu);
+    public ResponseEntity<?> saveMenu(@Valid @RequestBody Menu menu,
+                                      BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errors);
+        } else {
+            return ResponseEntity.ok(menuService.saveMenu(menu));
+        }
     }
 
     @Operation(
@@ -70,11 +82,13 @@ public class MenuController {
             }
     )
     @PutMapping(value = "/{id}")
-    public MenuDto updateMenu(
-            @PathVariable("id") Long id,
-            @RequestBody Menu menu
-    ) {
-        return menuService.updateMenu(id, menu);
+    public ResponseEntity<?> updateMenu(@PathVariable("id") Long id, @Valid @RequestBody Menu menu, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errors);
+        } else {
+            return ResponseEntity.ok(menuService.updateMenu(id, menu));
+        }
     }
 
     @Operation(
@@ -103,6 +117,5 @@ public class MenuController {
     public Menu createMenu() {
         return menuService.createMenu();
     }
-
 
 }

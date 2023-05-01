@@ -3,14 +3,13 @@ package com.codecool.biteways.controller;
 import com.codecool.biteways.model.RawRecipe;
 import com.codecool.biteways.model.Recipe;
 import com.codecool.biteways.model.dto.RecipeDto;
-import com.codecool.biteways.service.RecipeService;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,9 +25,6 @@ class RecipeControllerIT {
 
     @Autowired
     private TestRestTemplate restTemplate;
-
-    @Autowired
-    private RecipeService recipeService;
 
     @Test
     void saveRecipe() {
@@ -60,19 +56,20 @@ class RecipeControllerIT {
 
     @Test
     @DirtiesContext
-    @Transactional
     void testUpdateRecipeById_shouldReturnUpdatedRecipe() {
-        List<Recipe> savedRecipes = saveRecipes();
+        saveRecipes();
+        RecipeDto recipeToUpdate = restTemplate.getForObject("/api/biteways/recipe/1", RecipeDto.class);
 
-        Recipe recipeToUpdate = savedRecipes.get(0);
         recipeToUpdate.setName("updated name");
         recipeToUpdate.setInstructions("updated instructions");
 
-        restTemplate.put("/api/biteways/recipe/1", recipeToUpdate, Recipe.class);
+        restTemplate.put("/api/biteways/recipe/1", new ModelMapper().map(recipeToUpdate, Recipe.class), Recipe.class);
         RecipeDto updatedRecipeDto = restTemplate.getForObject("/api/biteways/recipe/1", RecipeDto.class);
 
-        RecipeDto recipeToUpdateDto = recipeService.recipeToDto(recipeToUpdate);
-        assertThat(updatedRecipeDto).isEqualTo(recipeToUpdateDto);
+        System.out.println(updatedRecipeDto);
+        System.out.println("--------------------------------------------------------------");
+        System.out.println(recipeToUpdate);
+        assertThat(updatedRecipeDto).isEqualTo(recipeToUpdate);
     }
 
     @Test
@@ -94,6 +91,7 @@ class RecipeControllerIT {
         RawRecipe rawRecipe2 = new RawRecipe("recipe2", "bake it", "2cup rice\n3cup tomato");
         Recipe recipe1 = restTemplate.postForObject("/api/biteways/recipe", rawRecipe1, Recipe.class);
         Recipe recipe2 = restTemplate.postForObject("/api/biteways/recipe", rawRecipe2, Recipe.class);
+        System.out.println("OOOOOO" + new ArrayList<>(List.of(recipe1, recipe2)) + "OOOOOOOOOOOOOOO");
         return new ArrayList<>(List.of(recipe1, recipe2));
     }
 }

@@ -1,6 +1,7 @@
 package com.codecool.biteways.model;
 
 import com.codecool.biteways.model.enums.UnitType;
+import com.codecool.biteways.model.validation.ValidUnitType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
@@ -9,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Objects;
 
@@ -18,6 +20,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ingredient")
+@Validated
 public class Ingredient {
 
     @Id
@@ -25,14 +28,13 @@ public class Ingredient {
     private Long id;
 
     @NotBlank(message = "Please provide a name for the ingredient.")
-    @Size(min = 3, max = 30, message = "Please enter an ingredient name that is between 3 and 30 characters in length.")
+    @Size(min = 2, max = 30, message = "Please enter an ingredient name that is between 3 and 30 characters in length.")
     @Pattern(regexp = "^[a-zA-Z0-9\\-\\s]*$", message = "The ingredient name can only contain letters, numbers, and hyphens.")
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id", foreignKey = @ForeignKey(name = "FK_INGREDIENT_RECIPE"))
     @JsonIgnore
-    @Valid
     private Recipe recipe;
 
     @Digits(integer = 10, fraction = 2, message = "The quantity should be a numeric value with up to 2 decimal places.")
@@ -40,11 +42,13 @@ public class Ingredient {
 
     @NotNull(message = "Please select a valid unit type.")
     @Enumerated(EnumType.STRING)
+    @ValidUnitType(
+            message = "This error is coming from the enum class"
+    )
     private UnitType unitType;
 
-    public Ingredient(String name, Recipe recipe, Float quantity, UnitType unitType) {
+    public Ingredient(String name, Float quantity, UnitType unitType) {
         this.name = name;
-        this.recipe = recipe;
         this.quantity = quantity;
         this.unitType = unitType;
     }

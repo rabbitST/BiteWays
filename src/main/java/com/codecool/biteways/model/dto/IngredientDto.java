@@ -35,7 +35,6 @@ public class IngredientDto {
 
     public IngredientDto(String name, String recipeName, Float quantity, UnitType unitType) {
         this.name = name;
-        this.recipeName = recipeName;
         this.quantity = quantity;
         this.unitType = unitType;
     }

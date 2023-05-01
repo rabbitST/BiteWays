@@ -28,11 +28,8 @@ public class RecipeService {
     }
 
     public Recipe saveRecipe(RawRecipe rawRecipe) {
-        Recipe r = new Recipe();
+        Recipe r = new Recipe(rawRecipe.getName(),1,rawRecipe.getInstructions());
         recipeRepository.save(r);
-        r.setName(rawRecipe.getName());
-        r.setInstructions(rawRecipe.getInstructions());
-        r.setDownloaded(1);
         r.setIngredientList(rawTextToIngredientList(rawRecipe, r));
         recipeRepository.save(r);
         return r;

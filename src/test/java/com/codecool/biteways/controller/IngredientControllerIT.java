@@ -2,6 +2,7 @@ package com.codecool.biteways.controller;
 
 import com.codecool.biteways.model.Ingredient;
 import com.codecool.biteways.model.dto.IngredientDto;
+import com.codecool.biteways.model.enums.UnitType;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +33,8 @@ public class IngredientControllerIT {
     @Test
     @DirtiesContext
     void findAllIngredient_insertTwoIngredient_shouldReturnLengthTwo() {
-        Ingredient ingredient1 = new Ingredient("salt");
-        Ingredient ingredient2 = new Ingredient("almond milk");
+        Ingredient ingredient1 = new Ingredient("salt",500F, UnitType.G);
+        Ingredient ingredient2 = new Ingredient("almond milk",1F, UnitType.L);
         restTemplate.postForObject("/api/biteways/ingredient", ingredient1, Ingredient.class);
         restTemplate.postForObject("/api/biteways/ingredient", ingredient2, Ingredient.class);
 
@@ -51,8 +52,8 @@ public class IngredientControllerIT {
     @Test
     @DirtiesContext
     void findIngredientById_findById1_shouldReturnId1() {
-        Ingredient ingredient1 = new Ingredient("salt");
-        Ingredient ingredient2 = new Ingredient("almond milk");
+        Ingredient ingredient1 = new Ingredient("salt",500F, UnitType.G);
+        Ingredient ingredient2 = new Ingredient("almond milk",1F, UnitType.L);
         restTemplate.postForObject("/api/biteways/ingredient", ingredient1, Ingredient.class);
         restTemplate.postForObject("/api/biteways/ingredient", ingredient2, Ingredient.class);
 
@@ -63,10 +64,10 @@ public class IngredientControllerIT {
     @Test
     @DirtiesContext
     void updateIngredient_existingIngredient_shouldReturnUpdatedIngredient() {
-        Ingredient ingredient = new Ingredient("salt");
+        Ingredient ingredient = new Ingredient("salt",500F, UnitType.G);
         Ingredient savedIngredient = restTemplate.postForObject("/api/biteways/ingredient", ingredient, Ingredient.class);
-
-        IngredientDto ingredientDto = new ModelMapper().map(new Ingredient("updated salt"), IngredientDto.class);
+        IngredientDto ingredientDto = new ModelMapper().map(new Ingredient("updated salt",40F, UnitType.DKG), IngredientDto.class);
+        ingredientDto.setId(savedIngredient.getId());
         restTemplate.put("/api/biteways/ingredient/" + savedIngredient.getId(), ingredientDto);
 
         Ingredient updatedIngredient = restTemplate.getForObject("/api/biteways/ingredient/" + savedIngredient.getId(), Ingredient.class);
@@ -77,7 +78,7 @@ public class IngredientControllerIT {
     @Test
     @DirtiesContext
     void deleteIngredient_deleteExistingIngredient_shouldReturnNoContent() {
-        Ingredient ingredient = new Ingredient("salt");
+        Ingredient ingredient = new Ingredient("salt",500F, UnitType.G);
         Ingredient savedIngredient = restTemplate.postForObject("/api/biteways/ingredient", ingredient, Ingredient.class);
 
         restTemplate.delete("/api/biteways/ingredient/" + savedIngredient.getId());
