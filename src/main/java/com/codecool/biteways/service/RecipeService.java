@@ -28,7 +28,7 @@ public class RecipeService {
     }
 
     public Recipe saveRecipe(RawRecipe rawRecipe) {
-        Recipe r = new Recipe(rawRecipe.getName(),1,rawRecipe.getInstructions());
+        Recipe r = new Recipe(rawRecipe.getName(), 1, rawRecipe.getInstructions());
         recipeRepository.save(r);
         r.setIngredientList(rawTextToIngredientList(rawRecipe, r));
         recipeRepository.save(r);
@@ -43,7 +43,7 @@ public class RecipeService {
                 .collect(Collectors.toList());
     }
 
-    public RecipeDto findRecipeById(Long id) throws NoSuchElementException{
+    public RecipeDto findRecipeById(Long id) throws NoSuchElementException {
         return this.recipeToDto(recipeRepository.findById(id).orElseThrow(NoSuchElementException::new));
     }
 
@@ -80,7 +80,6 @@ public class RecipeService {
     }
 
 
-
     public List<Ingredient> rawTextToIngredientList(RawRecipe rawRecipe, Recipe recipe) {
         List<Ingredient> ingredientList = new ArrayList<>();
         processIngredients(rawRecipe, recipe, ingredientList);
@@ -92,25 +91,38 @@ public class RecipeService {
         for (String line : lines) {
             Ingredient newIngredient = new Ingredient();
             newIngredient.setRecipe(recipe);
-            processIngredientLine(recipe, line, newIngredient);
+            processIngredientLine(line, newIngredient);
             ingredientRepository.save(newIngredient);
             ingredientList.add(newIngredient);
         }
     }
 
-    private static void processIngredientLine(Recipe recipe, String line, Ingredient newIngredient) {
-        Matcher matcher = Pattern.compile("^([0-9]+[A-Za-z]+)\\b").matcher(line);
+    private static void processIngredientLine(String line, Ingredient newIngredient) {
+        Matcher matcher = Pattern.compile("^([0-9]+ ?[A-Za-z]+)\\b").matcher(line);
         if (matcher.find()) {
-            String ingredientName = line.substring(matcher.end()).trim();
-            Float quantity = Float.valueOf(matcher.group().replaceAll("\\D", ""));
-            UnitType unitType = UnitType.valueOf(matcher.group().replaceAll("\\d", "").toUpperCase());
-            setIngredientProperties(newIngredient, recipe, ingredientName, quantity, unitType);
+            String unit = matcher.group().replaceAll("[^a-zA-Z]", "").toUpperCase();
+            setUnitType(line, newIngredient, matcher, unit);
         } else {
-            setIngredientProperties(newIngredient, recipe, line.trim(), 1f, UnitType.UNIT);
+            setIngredientProperties(newIngredient, line.trim(), 1f, UnitType.UNIT);
         }
     }
 
-    private static void setIngredientProperties(Ingredient newIngredient, Recipe recipe, String ingredientName, Float quantity, UnitType unitType) {
+    private static void setUnitType(String line, Ingredient newIngredient, Matcher matcher, String unit) {
+        if (isUnitTypeValid(unit)) {
+            String ingredientName = line.substring(matcher.end()).trim();
+            Float quantity = Float.valueOf(matcher.group().replaceAll("\\D", ""));
+            UnitType unitType = UnitType.valueOf(unit);
+            setIngredientProperties(newIngredient, ingredientName, quantity, unitType);
+        } else {
+            setIngredientProperties(newIngredient, line.trim(), 1f, UnitType.UNIT);
+        }
+    }
+
+    private static boolean isUnitTypeValid(String unit) {
+        return Arrays.stream(UnitType.values()).anyMatch(u -> String.valueOf(u).equals(unit));
+    }
+
+    private static void setIngredientProperties(Ingredient newIngredient, String ingredientName, Float quantity, UnitType unitType) {
         newIngredient.setName(ingredientName);
         newIngredient.setQuantity(quantity);
         newIngredient.setUnitType(unitType);
