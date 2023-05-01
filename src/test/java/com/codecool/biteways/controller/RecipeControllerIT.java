@@ -1,5 +1,6 @@
 package com.codecool.biteways.controller;
 
+import com.codecool.biteways.model.Menu;
 import com.codecool.biteways.model.RawRecipe;
 import com.codecool.biteways.model.Recipe;
 import com.codecool.biteways.model.dto.RecipeDto;
@@ -8,6 +9,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -27,7 +30,27 @@ class RecipeControllerIT {
     private TestRestTemplate restTemplate;
 
     @Test
-    void saveRecipe() {
+    @DirtiesContext
+    void testSaveRecipeWithValidRawRecipe_ShouldSaveValidRecipe() {
+        RawRecipe rawRecipe = new RawRecipe("recipe1", "cook it", "2tablespoon salt\n1cup flour");
+        Recipe recipe = restTemplate.postForObject("/api/biteways/recipe", rawRecipe, Recipe.class);
+        RecipeDto savedRecipe = restTemplate.getForObject("/api/biteways/recipe/1", RecipeDto.class);
+        assertThat(rawRecipe.getName()).isEqualTo(recipe.getName());
+        assertThat(rawRecipe.getInstructions()).isEqualTo(recipe.getInstructions());
+    }
+
+    @Test
+    @DirtiesContext
+    void testSaveRecipeWithInvalidData_shouldReturnErrorMessage() {
+        RawRecipe rawRecipe = new RawRecipe("re", "cook it", "2tablespoon salt\n1cup flour");
+        ResponseEntity<?> response = restTemplate.postForEntity("/api/biteways/recipe", rawRecipe, Object.class);
+        List<?> errorList = (List<?>) response.getBody();
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        String expectedErrorMessage="Please enter a recipe name that is between 3 and 30 characters in length.";
+        assert errorList != null;
+        assertThat(errorList.get(0)).isEqualTo(expectedErrorMessage);
+        assertTrue(response.getBody() instanceof List);
+        assertTrue(errorList.stream().allMatch(e -> e instanceof String));
     }
 
     @Test
@@ -35,10 +58,8 @@ class RecipeControllerIT {
     void findAllRecipe_insertTwoRecipe_shouldReturnLengthTwo() {
         List<Recipe> savedRecipes = saveRecipes();
         Recipe[] recipes = restTemplate.getForObject("/api/biteways/recipe", Recipe[].class);
-
         List<String> saved = Stream.of(recipes).map(Recipe::getName).toList();
         List<String> expected = Arrays.asList(savedRecipes.get(0).getName(), savedRecipes.get(1).getName());
-
         assertNotNull(recipes);
         assertEquals(2, recipes.length);
         assertTrue(saved.containsAll(expected));
@@ -59,16 +80,10 @@ class RecipeControllerIT {
     void testUpdateRecipeById_shouldReturnUpdatedRecipe() {
         saveRecipes();
         RecipeDto recipeToUpdate = restTemplate.getForObject("/api/biteways/recipe/1", RecipeDto.class);
-
         recipeToUpdate.setName("updated name");
         recipeToUpdate.setInstructions("updated instructions");
-
         restTemplate.put("/api/biteways/recipe/1", new ModelMapper().map(recipeToUpdate, Recipe.class), Recipe.class);
         RecipeDto updatedRecipeDto = restTemplate.getForObject("/api/biteways/recipe/1", RecipeDto.class);
-
-        System.out.println(updatedRecipeDto);
-        System.out.println("--------------------------------------------------------------");
-        System.out.println(recipeToUpdate);
         assertThat(updatedRecipeDto).isEqualTo(recipeToUpdate);
     }
 
@@ -79,9 +94,7 @@ class RecipeControllerIT {
         Long recipeIdToDelete = savedRecipes.get(0).getId();
         List<RecipeDto> recipeDtoListBeforeDelete = List.of(restTemplate.getForObject("/api/biteways/recipe", RecipeDto[].class));
         assertTrue(recipeDtoListBeforeDelete.stream().map(RecipeDto::getId).toList().contains(recipeIdToDelete));
-
         restTemplate.delete("/api/biteways/recipe/" + recipeIdToDelete);
-
         List<RecipeDto> recipeDtoListAfterDelete = List.of(restTemplate.getForObject("/api/biteways/recipe", RecipeDto[].class));
         assertFalse(recipeDtoListAfterDelete.stream().map(RecipeDto::getId).toList().contains(recipeIdToDelete));
     }
@@ -91,7 +104,6 @@ class RecipeControllerIT {
         RawRecipe rawRecipe2 = new RawRecipe("recipe2", "bake it", "2cup rice\n3cup tomato");
         Recipe recipe1 = restTemplate.postForObject("/api/biteways/recipe", rawRecipe1, Recipe.class);
         Recipe recipe2 = restTemplate.postForObject("/api/biteways/recipe", rawRecipe2, Recipe.class);
-        System.out.println("OOOOOO" + new ArrayList<>(List.of(recipe1, recipe2)) + "OOOOOOOOOOOOOOO");
         return new ArrayList<>(List.of(recipe1, recipe2));
     }
 }

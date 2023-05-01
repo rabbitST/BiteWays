@@ -9,6 +9,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -20,6 +22,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -43,6 +47,23 @@ class MenuControllerIT {
         assertThat(menuDto1.getId()).isEqualTo(1);
         assertThat(menuDto1.getRecipeList()).hasSize(7);
     }
+
+    @Test
+    @DirtiesContext
+    void testSaveMenuWithInvalidData_shouldReturnErrorMessage() {
+        Menu menu = new Menu();
+        menu.setName("T");
+
+        ResponseEntity<?> response = restTemplate.postForEntity("/api/biteways/menu", menu, Object.class);
+        List<?> errorList = (List<?>) response.getBody();
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        String expectedErrorMessage = "Please enter a menu name that is between 3 and 30 characters in length.";
+        assert errorList != null;
+        assertThat(errorList.get(0)).isEqualTo(expectedErrorMessage);
+        assertTrue(response.getBody() instanceof List);
+        assertTrue(errorList.stream().allMatch(e -> e instanceof String));
+    }
+
 
     @Test
     @DirtiesContext
@@ -72,7 +93,6 @@ class MenuControllerIT {
     void updateMenu_shouldUpdateMenuWithValidData() {
         saveRecipes();
         createTestMenus();
-
         MenuDto menuDto = restTemplate.getForObject("/api/biteways/menu/2", MenuDto.class);
         Menu toUpdate = new ModelMapper().map(menuDto, Menu.class);
         toUpdate.setName("updated name");
@@ -110,7 +130,6 @@ class MenuControllerIT {
         LocalDate today = LocalDate.now();
         LocalDate todayPlus7Day = LocalDate.now().plusDays(7);
         String menuName = String.valueOf(menuService.buildMenuName(today, todayPlus7Day));
-
         assertThat(createdMenu.getRecipeList().size()).isEqualTo(7);
         assertThat(createdMenu.getName()).isEqualTo(menuName);
         assertThat(dataBaseRecipeNames).containsAll(createdMenuRecipeNames);
@@ -121,7 +140,7 @@ class MenuControllerIT {
     void testGenerateShoppingList_shouldReturnValidShoppingList() {
         saveRecipes();
         createTestMenus();
-        MenuDto menuDto= restTemplate.getForObject("/api/biteways/menu/1", MenuDto.class);
+        MenuDto menuDto = restTemplate.getForObject("/api/biteways/menu/1", MenuDto.class);
         List<ShoppingItem> shoppingList = Arrays.asList(restTemplate.getForObject("/api/biteways/menu/shoppinglist/1", ShoppingItem[].class));
         Set<String> itemNames = menuDto.getRecipeList()
                 .stream()
@@ -129,35 +148,27 @@ class MenuControllerIT {
                 .map(Ingredient::getName)
                 .collect(Collectors.toSet());
         assertThat(shoppingList.size()).isEqualTo(itemNames.size());
+        assertThat(itemNames.stream().toList()).containsAll(shoppingList.stream().map(ShoppingItem::getItemName).toList());
 
     }
 
     public List<Recipe> saveRecipes() {
         RawRecipe rawRecipe1 = new RawRecipe("recipe1", "cook it", "2tablespoon salt\n1cup flour");
         Recipe recipe1 = restTemplate.postForObject("/api/biteways/recipe", rawRecipe1, Recipe.class);
-
         RawRecipe rawRecipe2 = new RawRecipe("recipe2", "bake it", "2cup rice\n3cup tomato");
         Recipe recipe2 = restTemplate.postForObject("/api/biteways/recipe", rawRecipe2, Recipe.class);
-
-
         RawRecipe rawRecipe3 = new RawRecipe("recipe3", "instruction 3", "1cup ingredient 1\n1cup ingredient 2");
         Recipe recipe3 = restTemplate.postForObject("/api/biteways/recipe", rawRecipe3, Recipe.class);
-
         RawRecipe rawRecipe4 = new RawRecipe("recipe4", "instruction 4", "1cup ingredient 1\n1cup ingredient 2");
         Recipe recipe4 = restTemplate.postForObject("/api/biteways/recipe", rawRecipe4, Recipe.class);
-
         RawRecipe rawRecipe5 = new RawRecipe("recipe5", "instruction 5", "1cup ingredient 1\n4cup ingredient 2");
         Recipe recipe5 = restTemplate.postForObject("/api/biteways/recipe", rawRecipe5, Recipe.class);
-
         RawRecipe rawRecipe6 = new RawRecipe("recipe6", "instruction 6", "1cup ingredient 1\n7cup ingredient 2");
         Recipe recipe6 = restTemplate.postForObject("/api/biteways/recipe", rawRecipe6, Recipe.class);
-
         RawRecipe rawRecipe7 = new RawRecipe("recipe7", "instruction 7", "1cup ingredient 1\n1cup ingredient 2");
         Recipe recipe7 = restTemplate.postForObject("/api/biteways/recipe", rawRecipe7, Recipe.class);
-
         RawRecipe rawRecipe8 = new RawRecipe("recipe8", "instruction 8", "1cup ingredient 1\n1cup ingredient 2");
         Recipe recipe8 = restTemplate.postForObject("/api/biteways/recipe", rawRecipe8, Recipe.class);
-
         RawRecipe rawRecipe9 = new RawRecipe("recipe9", "instruction 9", "1cup ingredient 1\n1cup ingredient 2");
         Recipe recipe9 = restTemplate.postForObject("/api/biteways/recipe", rawRecipe9, Recipe.class);
 

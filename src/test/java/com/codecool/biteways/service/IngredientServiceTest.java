@@ -81,9 +81,7 @@ public class IngredientServiceTest {
     void findIngredientById_idNotFound_shouldThrowRecordNotFoundException() {
         Long id = 3L;
         when(ingredientRepository.findById(id)).thenReturn(Optional.empty());
-        assertThrows(RecordNotFoundException.class, () -> {
-            ingredientService.findIngredientById(id);
-        });
+        assertThrows(RecordNotFoundException.class, () -> ingredientService.findIngredientById(id));
     }
 
     @Test
@@ -133,7 +131,7 @@ public class IngredientServiceTest {
         IngredientDto expectedDto = new IngredientDto();
         expectedDto.setId(1L);
         expectedDto.setName("Oil");
-        expectedDto.setRecipeName("Hummus");
+        expectedDto.setRecipe(recipe);
         expectedDto.setQuantity(2.0F);
         expectedDto.setUnitType(UnitType.TABLESPOON);
 

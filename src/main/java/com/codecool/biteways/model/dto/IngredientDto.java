@@ -1,5 +1,6 @@
 package com.codecool.biteways.model.dto;
 
+import com.codecool.biteways.model.Recipe;
 import com.codecool.biteways.model.enums.UnitType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -24,7 +25,7 @@ public class IngredientDto {
     @Pattern(regexp = "^[a-zA-Z0-9\\-\\s]*$", message = "The ingredient name can only contain letters, numbers, and hyphens.")
     private String name;
 
-    private String recipeName;
+    private Recipe recipe;
 
     @Digits(integer = 10, fraction = 2, message = "The quantity should be a numeric value with up to 2 decimal places.")
     private Float quantity;
@@ -33,23 +34,17 @@ public class IngredientDto {
     @Enumerated(EnumType.STRING)
     private UnitType unitType;
 
-    public IngredientDto(String name, String recipeName, Float quantity, UnitType unitType) {
-        this.name = name;
-        this.quantity = quantity;
-        this.unitType = unitType;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         IngredientDto that = (IngredientDto) o;
-        return Objects.equals(name, that.name) && Objects.equals(recipeName, that.recipeName) && Objects.equals(quantity, that.quantity) && unitType == that.unitType;
+        return Objects.equals(name, that.name) && Objects.equals(recipe, that.recipe) && Objects.equals(quantity, that.quantity) && unitType == that.unitType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, recipeName, quantity, unitType);
+        return Objects.hash(name, recipe, quantity, unitType);
     }
 
     @Override
@@ -57,7 +52,7 @@ public class IngredientDto {
         return "IngredientDto{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", recipeName='" + recipeName + '\'' +
+                ", recipe=" + recipe +
                 ", quantity=" + quantity +
                 ", unitType=" + unitType +
                 '}';

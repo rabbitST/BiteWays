@@ -47,6 +47,13 @@ public class Ingredient {
     )
     private UnitType unitType;
 
+    public Ingredient(String name, Float quantity, UnitType unitType,Recipe recipe) {
+        this.name = name;
+        this.quantity = quantity;
+        this.unitType = unitType;
+        this.recipe=recipe;
+    }
+
     public Ingredient(String name, Float quantity, UnitType unitType) {
         this.name = name;
         this.quantity = quantity;
@@ -75,7 +82,6 @@ public class Ingredient {
         return "Ingredient{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", recipe=" + recipe +
                 ", quantity=" + quantity +
                 ", unitType=" + unitType +
                 '}';
