@@ -1,6 +1,7 @@
 package com.codecool.biteways.controller;
 
 import com.codecool.biteways.model.Menu;
+import com.codecool.biteways.model.ShoppingItem;
 import com.codecool.biteways.model.dto.MenuDto;
 import com.codecool.biteways.service.MenuService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -116,6 +117,23 @@ public class MenuController {
     @GetMapping(value = "/createmenu")
     public Menu createMenu() {
         return menuService.createMenu();
+    }
+
+    @Operation(
+            summary = "Generate a shopping list from a menu",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Responds with the generated shopping list."),
+                    @ApiResponse(responseCode = "500", description = "An error occurred while processing the request.")
+            }
+    )
+    @GetMapping(value = "/shoppinglist")
+    public ResponseEntity<?> createShoppingList(@Valid @RequestBody Menu menu, BindingResult bindingResult){
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errors);
+        } else {
+            return ResponseEntity.ok(menuService.generateShoppingList(menu));
+        }
     }
 
 }

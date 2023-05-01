@@ -20,7 +20,7 @@ public class IngredientDto {
     private Long id;
 
     @NotBlank(message = "Please provide a name for the ingredient.")
-    @Size(min = 3, max = 30, message = "Please enter an ingredient name that is between 3 and 30 characters in length.")
+    @Size(min = 2, max = 50, message = "Please enter an ingredient name that is between 3 and 30 characters in length.")
     @Pattern(regexp = "^[a-zA-Z0-9\\-\\s]*$", message = "The ingredient name can only contain letters, numbers, and hyphens.")
     private String name;
 

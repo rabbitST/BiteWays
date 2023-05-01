@@ -1,7 +1,9 @@
 package com.codecool.biteways.service;
 
+import com.codecool.biteways.model.Ingredient;
 import com.codecool.biteways.model.Menu;
 import com.codecool.biteways.model.Recipe;
+import com.codecool.biteways.model.ShoppingItem;
 import com.codecool.biteways.model.dto.MenuDto;
 import com.codecool.biteways.repository.MenuRepository;
 import com.codecool.biteways.repository.RecipeRepository;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.IntStream;
 
 @Service
 public class MenuService {
@@ -86,6 +89,45 @@ public class MenuService {
 
     public MenuDto menuToMenuDto(Menu m) {
         return new ModelMapper().map(m, MenuDto.class);
+    }
+
+    public List<ShoppingItem> generateShoppingList(Menu menu) {
+        List<ShoppingItem> shoppingItemList = new ArrayList<>();
+        menu.
+                getRecipeList().
+                forEach(r -> r.
+                        getIngredientList().
+                        forEach(ingredient -> processIngredient(shoppingItemList, ingredient))
+                );
+        return shoppingItemList;
+    }
+
+    private static void processIngredient(List<ShoppingItem> shoppingItemList, Ingredient ingredient) {
+        int index = IntStream.range(0, shoppingItemList.size())
+                .filter(i -> shoppingItemList.
+                        get(i).
+                        getItemName().
+                        equals(ingredient.getName())
+                        &&
+                        shoppingItemList.
+                                get(i).
+                                getUnitType().
+                                equals(ingredient.getUnitType())
+                )
+                .findFirst()
+                .orElse(-1);
+        addToShoppingList(shoppingItemList, ingredient, index);
+    }
+
+    private static void addToShoppingList(List<ShoppingItem> shoppingItemList, Ingredient ingredient, int index) {
+        if (index >= 0) {
+            shoppingItemList.
+                    get(index).
+                    setQuantity(shoppingItemList.get(index).getQuantity() + ingredient.getQuantity());
+        } else {
+            shoppingItemList.
+                    add(new ShoppingItem(ingredient.getName(), ingredient.getQuantity(), ingredient.getUnitType()));
+        }
     }
 
 }

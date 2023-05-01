@@ -31,7 +31,7 @@ public class RecipeDto {
 
     @NotBlank(message = "Please provide instructions for the recipe.")
     @Size(min = 8, max = 600, message = "Please enter instructions that are between 8 and 600 characters long.")
-    @Pattern(regexp = "^[a-zA-Z0-9\\s\\-.]*$", message = "Please enter instructions that only contain letters, numbers, hyphens, and spaces.")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s\\-., \\n\\r\"'’]*$", message = "Please enter instructions that only contain letters, numbers, hyphens, quote, double quote  and spaces.")
     private String instructions;
 
     @Valid
