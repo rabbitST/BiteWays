@@ -1,5 +1,6 @@
 package com.codecool.biteways.service;
 
+import com.codecool.biteways.exceptions.RecordNotFoundException;
 import com.codecool.biteways.model.Ingredient;
 import com.codecool.biteways.model.RawRecipe;
 import com.codecool.biteways.model.Recipe;
@@ -43,8 +44,10 @@ public class RecipeService {
                 .collect(Collectors.toList());
     }
 
-    public RecipeDto findRecipeById(Long id) throws NoSuchElementException {
-        return this.recipeToDto(recipeRepository.findById(id).orElseThrow(NoSuchElementException::new));
+    public RecipeDto findRecipeById(Long id) throws RecordNotFoundException {
+        return this.recipeToDto(recipeRepository.findById(id).orElseThrow( () -> new RecordNotFoundException(
+                String.format("Requested ID: %s not found!", id)
+        )));
     }
 
     @Transactional

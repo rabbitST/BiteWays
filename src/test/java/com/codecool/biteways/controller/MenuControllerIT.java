@@ -9,18 +9,15 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.aspectj.bridge.MessageUtil.fail;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -67,7 +64,7 @@ class MenuControllerIT {
 
     @Test
     @DirtiesContext
-    void findAllMenu_shouldReturnAllMenus() {
+    void testFindAllMenu_shouldReturnAllMenus() {
         saveRecipes();
         createTestMenus();
         List<MenuDto> menuDtoList = List.of(restTemplate.getForObject("/api/biteways/menu", MenuDto[].class));
@@ -77,7 +74,7 @@ class MenuControllerIT {
 
     @Test
     @DirtiesContext
-    void findMenuById_shouldReturnMenuById() {
+    void testFindMenuById_shouldReturnMenuById() {
         saveRecipes();
         createTestMenus();
         MenuDto menuDto = restTemplate.getForObject("/api/biteways/menu/1", MenuDto.class);
@@ -90,7 +87,15 @@ class MenuControllerIT {
 
     @Test
     @DirtiesContext
-    void updateMenu_shouldUpdateMenuWithValidData() {
+    public void testFindMenuById_shouldReturnErrorMessage() {
+        Long nonexistentId = 999L;
+        ResponseEntity<MenuDto> response = restTemplate.getForEntity("/api/biteways/menu/{id}", MenuDto.class, nonexistentId);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    @DirtiesContext
+    void testUpdateMenu_shouldUpdateMenuWithValidData() {
         saveRecipes();
         createTestMenus();
         MenuDto menuDto = restTemplate.getForObject("/api/biteways/menu/2", MenuDto.class);
@@ -99,6 +104,34 @@ class MenuControllerIT {
         restTemplate.put("/api/biteways/menu/2", toUpdate, MenuDto.class);
         MenuDto updatedMenu = restTemplate.getForObject("/api/biteways/menu/2", MenuDto.class);
         assertThat(updatedMenu.getName()).isEqualTo("updated name");
+    }
+
+    @Test
+    @DirtiesContext
+    void testUpdateMenuWithInvalidData_shouldReturnErrorMessage() {
+        saveRecipes();
+        createTestMenus();
+        MenuDto menuDto = restTemplate.getForObject("/api/biteways/menu/2", MenuDto.class);
+        Menu toUpdate = new ModelMapper().map(menuDto, Menu.class);
+        toUpdate.setName("w");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Menu> entity = new HttpEntity<>(toUpdate, headers);
+        ResponseEntity<?> response = restTemplate.exchange(
+                "/api/biteways/menu/2",
+                HttpMethod.PUT,
+                entity,
+                Object.class
+        );
+
+        List<?> errorList = (List<?>) response.getBody();
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        String expectedErrorMessage = "Please enter a menu name that is between 3 and 30 characters in length.";
+        assert errorList != null;
+        assertThat(errorList.get(0)).isEqualTo(expectedErrorMessage);
+        assertTrue(response.getBody() instanceof List);
+        assertTrue(errorList.stream().allMatch(e -> e instanceof String));
     }
 
     @Test

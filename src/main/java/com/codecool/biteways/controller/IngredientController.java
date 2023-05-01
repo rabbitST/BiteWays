@@ -57,7 +57,9 @@ public class IngredientController {
     )
     @GetMapping
     public List<IngredientDto> findAllIngredient() {
-        return ingredientService.findAllIngredient();
+        List<IngredientDto> ingredientDtoList=ingredientService.findAllIngredient();
+        System.out.println(ingredientDtoList);
+        return ingredientDtoList;
     }
 
     @Operation(
@@ -71,7 +73,7 @@ public class IngredientController {
     @GetMapping("/{id}")
     public ResponseEntity<IngredientDto> findIngredientById(
             @PathVariable("id") Long id) throws RecordNotFoundException {
-        return new ResponseEntity<>(ingredientService.findIngredientById(id), HttpStatus.FOUND);
+        return new ResponseEntity<>(ingredientService.findIngredientById(id), HttpStatus.OK);
     }
 
     @Operation(

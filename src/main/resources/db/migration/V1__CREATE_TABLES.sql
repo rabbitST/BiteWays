@@ -33,9 +33,7 @@ CREATE  TABLE menu_recipe(
 );
 
 ALTER TABLE ingredient ADD CONSTRAINT FK_INGREDIENT_RECIPE FOREIGN KEY (RECIPE_ID) REFERENCES recipe (id);
--- ALTER TABLE ingredient DROP CONSTRAINT IF EXISTS FK_RECIPEID_RECIPE;
--- ALTER TABLE ingredient DROP CONSTRAINT ingredient_recipe_id_fkey;
--- ALTER TABLE ingredient DROP CONSTRAINT fk_recipeid_recipe;
+
 
 
 

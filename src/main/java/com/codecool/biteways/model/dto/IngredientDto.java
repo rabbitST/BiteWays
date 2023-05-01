@@ -52,7 +52,6 @@ public class IngredientDto {
         return "IngredientDto{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", recipe=" + recipe +
                 ", quantity=" + quantity +
                 ", unitType=" + unitType +
                 '}';

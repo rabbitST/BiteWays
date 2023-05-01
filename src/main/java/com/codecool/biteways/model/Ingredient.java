@@ -20,7 +20,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ingredient")
-@Validated
 public class Ingredient {
 
     @Id
@@ -32,7 +31,7 @@ public class Ingredient {
     @Pattern(regexp = "^[a-zA-Z0-9\\-\\s]*$", message = "The ingredient name can only contain letters, numbers, and hyphens.")
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "recipe_id", foreignKey = @ForeignKey(name = "FK_INGREDIENT_RECIPE"))
     @JsonIgnore
     private Recipe recipe;
@@ -42,9 +41,6 @@ public class Ingredient {
 
     @NotNull(message = "Please select a valid unit type.")
     @Enumerated(EnumType.STRING)
-    @ValidUnitType(
-            message = "This error is coming from the enum class"
-    )
     private UnitType unitType;
 
     public Ingredient(String name, Float quantity, UnitType unitType,Recipe recipe) {

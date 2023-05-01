@@ -1,5 +1,6 @@
 package com.codecool.biteways.service;
 
+import com.codecool.biteways.exceptions.RecordNotFoundException;
 import com.codecool.biteways.model.Ingredient;
 import com.codecool.biteways.model.Menu;
 import com.codecool.biteways.model.RawRecipe;
@@ -96,7 +97,7 @@ class RecipeServiceTest {
     }
 
     @Test
-    void testFindRecipeById_validIdReturnTheRequestedRecipe() {
+    void testFindRecipeById_validIdReturnTheRequestedRecipe() throws RecordNotFoundException {
         RecipeDto expected = recipeService.recipeToDto(recipe2);
         when(recipeRepository.findById(2L)).thenReturn(Optional.ofNullable(recipe2));
         RecipeDto requestedRecipe = recipeService.findRecipeById(2L);

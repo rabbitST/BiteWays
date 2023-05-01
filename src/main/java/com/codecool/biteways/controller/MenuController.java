@@ -1,5 +1,6 @@
 package com.codecool.biteways.controller;
 
+import com.codecool.biteways.exceptions.RecordNotFoundException;
 import com.codecool.biteways.model.Menu;
 import com.codecool.biteways.model.ShoppingItem;
 import com.codecool.biteways.model.dto.MenuDto;
@@ -10,9 +11,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,8 +73,13 @@ public class MenuController {
     )
     @GetMapping(value = "/{id}")
     public MenuDto findMenuById(@PathVariable("id") Long id) {
-        return menuService.findMenuById(id);
+        try {
+            return menuService.findMenuById(id);
+        } catch (RecordNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
+        }
     }
+
 
     @Operation(
             summary = "Update a Menu entity by ID.",

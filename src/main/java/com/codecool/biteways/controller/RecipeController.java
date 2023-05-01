@@ -1,5 +1,6 @@
 package com.codecool.biteways.controller;
 
+import com.codecool.biteways.exceptions.RecordNotFoundException;
 import com.codecool.biteways.model.RawRecipe;
 import com.codecool.biteways.model.Recipe;
 import com.codecool.biteways.model.dto.RecipeDto;
@@ -67,7 +68,7 @@ public class RecipeController {
             }
     )
     @GetMapping(value = "/{id}")
-    public RecipeDto findRecipeById(@PathVariable("id") Long id) {
+    public RecipeDto findRecipeById(@PathVariable("id") Long id) throws RecordNotFoundException {
         return recipeService.findRecipeById(id);
     }
 

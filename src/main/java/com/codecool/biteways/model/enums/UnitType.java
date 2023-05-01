@@ -14,6 +14,7 @@ public enum UnitType {
     PC,
     PCS,
     PACKAGE,
+    SPRINKLE,
     UNIT
 
 }

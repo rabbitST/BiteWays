@@ -1,5 +1,6 @@
 package com.codecool.biteways.service;
 
+import com.codecool.biteways.exceptions.RecordNotFoundException;
 import com.codecool.biteways.model.Ingredient;
 import com.codecool.biteways.model.Menu;
 import com.codecool.biteways.model.Recipe;
@@ -39,8 +40,11 @@ public class MenuService {
                 toList();
     }
 
-    public MenuDto findMenuById(Long id) {
-        return menuToMenuDto(menuRepository.findById(id).orElseThrow());
+    public MenuDto findMenuById(Long id) throws RecordNotFoundException {
+        Menu menu = menuRepository.findById(id).orElseThrow( () -> new RecordNotFoundException(
+                String.format("Requested ID: %s not found!", id)
+        ));
+        return menuToMenuDto(menu);
     }
 
     @Transactional
@@ -93,7 +97,7 @@ public class MenuService {
 
     public List<ShoppingItem> generateShoppingList(Long id) {
         List<ShoppingItem> shoppingItemList = new ArrayList<>();
-        Menu menu=menuRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        Menu menu = menuRepository.findById(id).orElseThrow(NoSuchElementException::new);
         menu.
                 getRecipeList().
                 forEach(r -> r.
