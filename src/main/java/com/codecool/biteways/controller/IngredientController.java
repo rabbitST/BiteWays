@@ -88,7 +88,6 @@ public class IngredientController {
             @Valid @RequestBody IngredientDto ingredientDto,
             BindingResult bindingResult
     ) throws RecordNotFoundException {
-        System.out.println(ingredientDto);
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
             return ResponseEntity.badRequest().body(errors);

@@ -126,14 +126,9 @@ public class MenuController {
                     @ApiResponse(responseCode = "500", description = "An error occurred while processing the request.")
             }
     )
-    @GetMapping(value = "/shoppinglist")
-    public ResponseEntity<?> createShoppingList(@Valid @RequestBody Menu menu, BindingResult bindingResult){
-        if (bindingResult.hasErrors()) {
-            List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
-            return ResponseEntity.badRequest().body(errors);
-        } else {
-            return ResponseEntity.ok(menuService.generateShoppingList(menu));
-        }
+    @GetMapping(value = "/shoppinglist/{id}")
+    public List<ShoppingItem> createShoppingList(@PathVariable("id") Long id){
+        return menuService.generateShoppingList(id);
     }
 
 }

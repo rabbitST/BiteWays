@@ -91,8 +91,9 @@ public class MenuService {
         return new ModelMapper().map(m, MenuDto.class);
     }
 
-    public List<ShoppingItem> generateShoppingList(Menu menu) {
+    public List<ShoppingItem> generateShoppingList(Long id) {
         List<ShoppingItem> shoppingItemList = new ArrayList<>();
+        Menu menu=menuRepository.findById(id).orElseThrow(NoSuchElementException::new);
         menu.
                 getRecipeList().
                 forEach(r -> r.
