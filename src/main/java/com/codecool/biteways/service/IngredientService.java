@@ -47,6 +47,8 @@ public class IngredientService {
                 findById(id).
                 orElseThrow(() -> new RecordNotFoundException(String.format("Requested ID: %s not found!", id)));
         updateIngredient.setName(ingredientDto.getName());
+        updateIngredient.setQuantity(ingredientDto.getQuantity());
+        updateIngredient.setUnitType(ingredientDto.getUnitType());
         return updateIngredient;
     }
 

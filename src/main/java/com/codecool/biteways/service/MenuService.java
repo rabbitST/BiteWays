@@ -29,6 +29,9 @@ public class MenuService {
     }
 
     public MenuDto saveMenu(Menu menu) {
+        Menu newMenu = new Menu();
+        newMenu.setName(menu.getName());
+        newMenu.setRecipeList(menu.getRecipeList());
         return menuToMenuDto(menuRepository.save(menu));
     }
 
@@ -41,7 +44,7 @@ public class MenuService {
     }
 
     public MenuDto findMenuById(Long id) throws RecordNotFoundException {
-        Menu menu = menuRepository.findById(id).orElseThrow( () -> new RecordNotFoundException(
+        Menu menu = menuRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(
                 String.format("Requested ID: %s not found!", id)
         ));
         return menuToMenuDto(menu);
