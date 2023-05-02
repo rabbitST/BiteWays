@@ -136,8 +136,6 @@ class RecipeServiceTest {
         when(recipeRepository.findById(anyLong())).thenReturn(Optional.of(recipe2));
 
         recipeService.deleteRecipe(2L);
-
-        verify(ingredientRepository, times(1)).deleteById(anyLong());
         verify(recipeRepository, times(1)).deleteById(anyLong());
     }
 

@@ -10,6 +10,7 @@ import com.codecool.biteways.repository.IngredientRepository;
 import com.codecool.biteways.repository.RecipeRepository;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -68,18 +69,25 @@ public class RecipeService {
     }
 
     public void deleteRecipe(Long id) {
-        Recipe recipe = recipeRepository.findById(id).orElseThrow(NoSuchElementException::new);
-        recipe.
-                getIngredientList().
-                forEach(i -> {
-                    i.setRecipe(null);
-                    ingredientRepository.deleteById(i.getId());
-                });
-        recipeRepository.deleteById(id);
+        try {
+            Recipe recipe = recipeRepository.findById(id).get();
+            recipeRepository.deleteById(id);
+        } catch (DataIntegrityViolationException | NoSuchElementException e) {
+            // Handle the case where the recipe with the specified ID is not found
+            e.printStackTrace();
+        }
     }
 
+
     public RecipeDto recipeToDto(Recipe recipe) {
-        return new ModelMapper().map(recipe, RecipeDto.class);
+        List<Ingredient> sortedIngredients = recipe.getIngredientList().stream()
+                .sorted(Comparator.comparing(Ingredient::getId))
+                .collect(Collectors.toList());
+
+        RecipeDto recipeDto = new ModelMapper().map(recipe, RecipeDto.class);
+        recipeDto.setIngredientList(sortedIngredients);
+
+        return recipeDto;
     }
 
 

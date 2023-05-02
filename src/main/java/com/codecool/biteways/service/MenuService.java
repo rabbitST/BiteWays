@@ -38,7 +38,7 @@ public class MenuService {
     public List<MenuDto> findAllMenu() {
         return menuRepository.
                 findAll().
-                stream().
+                stream().sorted(Comparator.comparing(Menu::getId)).
                 map(this::menuToMenuDto).
                 toList();
     }

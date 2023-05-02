@@ -28,7 +28,7 @@ public class Ingredient {
     @Pattern(regexp = "^[a-zA-Z0-9\\-\\s]*$", message = "The ingredient name can only contain letters, numbers, and hyphens.")
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "recipe_id", foreignKey = @ForeignKey(name = "FK_INGREDIENT_RECIPE"))
     @JsonIgnore
     private Recipe recipe;
@@ -40,11 +40,11 @@ public class Ingredient {
     @Enumerated(EnumType.STRING)
     private UnitType unitType;
 
-    public Ingredient(String name, Float quantity, UnitType unitType,Recipe recipe) {
+    public Ingredient(String name, Float quantity, UnitType unitType, Recipe recipe) {
         this.name = name;
         this.quantity = quantity;
         this.unitType = unitType;
-        this.recipe=recipe;
+        this.recipe = recipe;
     }
 
     public Ingredient(String name, Float quantity, UnitType unitType) {

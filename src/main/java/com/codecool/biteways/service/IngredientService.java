@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -27,6 +28,7 @@ public class IngredientService {
         return ingredientRepository.
                 findAll().
                 stream().
+                sorted(Comparator.comparing(Ingredient::getId)).
                 map(this::ingredientToDto).
                 toList();
     }

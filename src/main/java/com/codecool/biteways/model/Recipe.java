@@ -36,7 +36,7 @@ public class Recipe {
     @Pattern(regexp = "^[a-zA-Z0-9\\s\\-.,\\\\ °/()\\n\\r\"'’]*$", message = "Please enter instructions that only contain letters, numbers, hyphens, quote, double quote and spaces.")
     private String instructions;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "recipe")
     @Valid
     List<Ingredient> ingredientList;
 
