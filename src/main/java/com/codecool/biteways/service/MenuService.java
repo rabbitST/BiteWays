@@ -107,7 +107,7 @@ public class MenuService {
                         getIngredientList().
                         forEach(ingredient -> processIngredient(shoppingItemList, ingredient))
                 );
-        return shoppingItemList;
+        return shoppingItemList.stream().sorted(Comparator.comparing(ShoppingItem::getItemName)).toList();
     }
 
     private static void processIngredient(List<ShoppingItem> shoppingItemList, Ingredient ingredient) {
