@@ -8,6 +8,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
@@ -91,6 +93,17 @@ class RecipeControllerIT {
         restTemplate.put("/api/biteways/recipe/1", new ModelMapper().map(recipeToUpdate, Recipe.class), Recipe.class);
         RecipeDto updatedRecipeDto = restTemplate.getForObject("/api/biteways/recipe/1", RecipeDto.class);
         assertThat(updatedRecipeDto).isEqualTo(recipeToUpdate);
+    }
+
+    @Test
+    void testUpdateRecipeByIdWithInvalidRecipe_shouldReturnErrorMessage() {
+        saveRecipes();
+        Recipe recipe=restTemplate.getForObject("/api/biteways/recipe/1", Recipe.class);
+        recipe.setName("*");
+        ResponseEntity<String> response = restTemplate.exchange("/api/biteways/recipe/1", HttpMethod.PUT, new HttpEntity<>(recipe), String.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(Objects.requireNonNull(response.getBody()).contains("The recipe name can only contain letters, numbers, hyphens, spaces."));
     }
 
     @Test
