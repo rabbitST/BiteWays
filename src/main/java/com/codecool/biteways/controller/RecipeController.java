@@ -14,8 +14,10 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -68,8 +70,8 @@ public class RecipeController {
             }
     )
     @GetMapping(value = "/{id}")
-    public RecipeDto findRecipeById(@PathVariable("id") Long id) throws RecordNotFoundException {
-        return recipeService.findRecipeById(id);
+    public ResponseEntity<?> findRecipeById(@PathVariable("id") Long id) throws RecordNotFoundException {
+        return ResponseEntity.ok(recipeService.findRecipeById(id));
     }
 
     @Operation(
@@ -105,6 +107,15 @@ public class RecipeController {
     @DeleteMapping(value = "/{id}")
     public void deleteRecipe(@PathVariable("id") Long id) {
         recipeService.deleteRecipe(id);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        String fieldName = ex.getName();
+        String fieldType = Objects.requireNonNull(ex.getRequiredType()).getSimpleName();
+        String invalidValue = Objects.requireNonNull(ex.getValue()).toString();
+        String errorMessage = "Invalid " + fieldName + " value: " + invalidValue + ". Expected " + fieldType + ".";
+        return ResponseEntity.badRequest().body(errorMessage);
     }
 
 }

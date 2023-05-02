@@ -14,8 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -112,5 +114,14 @@ public class IngredientController {
             @PathVariable("id") Long id
     ) {
         ingredientService.deleteIngredient(id);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        String fieldName = ex.getName();
+        String fieldType = Objects.requireNonNull(ex.getRequiredType()).getSimpleName();
+        String invalidValue = Objects.requireNonNull(ex.getValue()).toString();
+        String errorMessage = "Invalid " + fieldName + " value: " + invalidValue + ". Expected " + fieldType + ".";
+        return ResponseEntity.badRequest().body(errorMessage);
     }
 }

@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,7 +34,7 @@ public class IngredientControllerIT {
 
     @Test
     @DirtiesContext
-    void findAllIngredient_insertTwoIngredient_shouldReturnLengthTwo() {
+    void findAllIngredientInsertTwoIngredient_shouldReturnLengthTwo() {
         Ingredient ingredient1 = new Ingredient("salt",500F, UnitType.G);
         Ingredient ingredient2 = new Ingredient("almond milk",1F, UnitType.L);
         restTemplate.postForObject("/api/biteways/ingredient", ingredient1, Ingredient.class);
@@ -62,8 +64,15 @@ public class IngredientControllerIT {
     }
 
     @Test
+    void testFindRecipeMenuByIdWithInvalidCharacter_shouldReturnErrorMessage() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/api/biteways/ingredient/m", String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(Objects.requireNonNull(response.getBody()).contains("Invalid id value"));
+    }
+
+    @Test
     @DirtiesContext
-    void updateIngredient_existingIngredient_shouldReturnUpdatedIngredient() {
+    void updateIngredientExistingIngredient_shouldReturnUpdatedIngredient() {
         Ingredient ingredient = new Ingredient("salt",500F, UnitType.G);
         Ingredient savedIngredient = restTemplate.postForObject("/api/biteways/ingredient", ingredient, Ingredient.class);
         IngredientDto ingredientDto = new ModelMapper().map(new Ingredient("updated salt",40F, UnitType.DKG), IngredientDto.class);

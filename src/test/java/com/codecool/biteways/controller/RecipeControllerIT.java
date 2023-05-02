@@ -1,6 +1,5 @@
 package com.codecool.biteways.controller;
 
-import com.codecool.biteways.model.Menu;
 import com.codecool.biteways.model.RawRecipe;
 import com.codecool.biteways.model.Recipe;
 import com.codecool.biteways.model.dto.RecipeDto;
@@ -17,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +34,6 @@ class RecipeControllerIT {
     void testSaveRecipeWithValidRawRecipe_ShouldSaveValidRecipe() {
         RawRecipe rawRecipe = new RawRecipe("recipe1", "cook it", "2tablespoon salt\n1cup flour");
         Recipe recipe = restTemplate.postForObject("/api/biteways/recipe", rawRecipe, Recipe.class);
-        RecipeDto savedRecipe = restTemplate.getForObject("/api/biteways/recipe/1", RecipeDto.class);
         assertThat(rawRecipe.getName()).isEqualTo(recipe.getName());
         assertThat(rawRecipe.getInstructions()).isEqualTo(recipe.getInstructions());
     }
@@ -46,7 +45,7 @@ class RecipeControllerIT {
         ResponseEntity<?> response = restTemplate.postForEntity("/api/biteways/recipe", rawRecipe, Object.class);
         List<?> errorList = (List<?>) response.getBody();
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        String expectedErrorMessage="Please enter a recipe name that is between 3 and 30 characters in length.";
+        String expectedErrorMessage = "Please enter a recipe name that is between 3 and 30 characters in length.";
         assert errorList != null;
         assertThat(errorList.get(0)).isEqualTo(expectedErrorMessage);
         assertTrue(response.getBody() instanceof List);
@@ -68,11 +67,18 @@ class RecipeControllerIT {
 
     @Test
     @DirtiesContext
-    void findRecipeById() {
+    void testFindRecipeByIdWithValidId_shouldReturnTheRequestedId() {
         List<Recipe> recipes = saveRecipes();
         Recipe recipe = restTemplate.getForObject("/api/biteways/recipe/2", Recipe.class);
         assertNotNull(recipe);
         assertThat(recipe.getName()).isEqualTo(recipes.get(1).getName());
+    }
+
+    @Test
+    void testFindRecipeByIdWithInvalidCharacter_shouldReturnErrorMessage() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/api/biteways/recipe/m", String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(Objects.requireNonNull(response.getBody()).contains("Invalid id value"));
     }
 
     @Test

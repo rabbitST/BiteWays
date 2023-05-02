@@ -1,16 +1,13 @@
 package com.codecool.biteways.model;
 
 import com.codecool.biteways.model.enums.UnitType;
-import com.codecool.biteways.model.validation.ValidUnitType;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.Objects;
 

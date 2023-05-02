@@ -17,7 +17,6 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.aspectj.bridge.MessageUtil.fail;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -91,6 +90,13 @@ class MenuControllerIT {
         Long nonexistentId = 999L;
         ResponseEntity<MenuDto> response = restTemplate.getForEntity("/api/biteways/menu/{id}", MenuDto.class, nonexistentId);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void testFindRecipeMenuByIdWithInvalidCharacter_shouldReturnErrorMessage() {
+        ResponseEntity<String> response = restTemplate.getForEntity("/api/biteways/menu/m", String.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertTrue(Objects.requireNonNull(response.getBody()).contains("Invalid id value"));
     }
 
     @Test
@@ -214,4 +220,5 @@ class MenuControllerIT {
             restTemplate.postForObject("/api/biteways/menu", menu, MenuDto.class);
         }
     }
+
 }
