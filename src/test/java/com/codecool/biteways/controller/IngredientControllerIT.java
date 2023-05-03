@@ -1,6 +1,8 @@
 package com.codecool.biteways.controller;
 
 import com.codecool.biteways.model.Ingredient;
+import com.codecool.biteways.model.RawRecipe;
+import com.codecool.biteways.model.Recipe;
 import com.codecool.biteways.model.dto.IngredientDto;
 import com.codecool.biteways.model.enums.UnitType;
 import org.junit.jupiter.api.Test;
@@ -35,8 +37,8 @@ public class IngredientControllerIT {
     @Test
     @DirtiesContext
     void findAllIngredientInsertTwoIngredient_shouldReturnLengthTwo() {
-        Ingredient ingredient1 = new Ingredient("salt",500F, UnitType.G);
-        Ingredient ingredient2 = new Ingredient("almond milk",1F, UnitType.L);
+        Ingredient ingredient1 = new Ingredient("salt", 500F, UnitType.G);
+        Ingredient ingredient2 = new Ingredient("almond milk", 1F, UnitType.L);
         restTemplate.postForObject("/api/biteways/ingredient", ingredient1, Ingredient.class);
         restTemplate.postForObject("/api/biteways/ingredient", ingredient2, Ingredient.class);
 
@@ -54,8 +56,8 @@ public class IngredientControllerIT {
     @Test
     @DirtiesContext
     void findIngredientById_findById1_shouldReturnId1() {
-        Ingredient ingredient1 = new Ingredient("salt",500F, UnitType.G);
-        Ingredient ingredient2 = new Ingredient("almond milk",1F, UnitType.L);
+        Ingredient ingredient1 = new Ingredient("salt", 500F, UnitType.G);
+        Ingredient ingredient2 = new Ingredient("almond milk", 1F, UnitType.L);
         restTemplate.postForObject("/api/biteways/ingredient", ingredient1, Ingredient.class);
         restTemplate.postForObject("/api/biteways/ingredient", ingredient2, Ingredient.class);
 
@@ -73,9 +75,9 @@ public class IngredientControllerIT {
     @Test
     @DirtiesContext
     void updateIngredientExistingIngredient_shouldReturnUpdatedIngredient() {
-        Ingredient ingredient = new Ingredient("salt",500F, UnitType.G);
+        Ingredient ingredient = new Ingredient("salt", 500F, UnitType.G);
         Ingredient savedIngredient = restTemplate.postForObject("/api/biteways/ingredient", ingredient, Ingredient.class);
-        IngredientDto ingredientDto = new ModelMapper().map(new Ingredient("updated salt",40F, UnitType.DKG), IngredientDto.class);
+        IngredientDto ingredientDto = new ModelMapper().map(new Ingredient("updated salt", 40F, UnitType.DKG), IngredientDto.class);
         ingredientDto.setId(savedIngredient.getId());
         restTemplate.put("/api/biteways/ingredient/" + savedIngredient.getId(), ingredientDto);
 
@@ -87,7 +89,7 @@ public class IngredientControllerIT {
     @Test
     @DirtiesContext
     void deleteIngredient_deleteExistingIngredient_shouldReturnNoContent() {
-        Ingredient ingredient = new Ingredient("salt",500F, UnitType.G);
+        Ingredient ingredient = new Ingredient("salt", 500F, UnitType.G);
         Ingredient savedIngredient = restTemplate.postForObject("/api/biteways/ingredient", ingredient, Ingredient.class);
 
         restTemplate.delete("/api/biteways/ingredient/" + savedIngredient.getId());
@@ -99,5 +101,22 @@ public class IngredientControllerIT {
         assert ingredients != null;
         assertThat(ingredients.length).isEqualTo(0);
         assertThat(statusCode).isEqualTo(HttpStatusCode.valueOf(200));
+    }
+
+    @Test
+    @DirtiesContext
+    public void testAddIngredientToRecipe() {
+        RawRecipe rawRecipe1 = new RawRecipe("recipe1", "cook it", "2tablespoon salt\n1cup flour");
+        Recipe recipe = restTemplate.postForObject("/api/biteways/recipe", rawRecipe1, Recipe.class);
+
+        Ingredient ingredient = new Ingredient(3L, "Test Ingredient", recipe, 1F, UnitType.SPRINKLE);
+        IngredientDto ingredientDto = new ModelMapper().map(ingredient, IngredientDto.class);
+
+        ResponseEntity<IngredientDto> response = restTemplate.postForEntity("/api/biteways/ingredient/addtorecipe/" + recipe.getId(), ingredientDto, IngredientDto.class);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(ingredientDto).isNotNull();
+        assertThat(Objects.requireNonNull(response.getBody()).getName()).isEqualTo(ingredientDto.getName());
+        assertThat(response.getBody().getQuantity()).isEqualTo(ingredientDto.getQuantity());
     }
 }
