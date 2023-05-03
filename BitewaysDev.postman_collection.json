@@ -177,6 +177,14 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "addIngredientToRecipe",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
 				}
 			]
 		},

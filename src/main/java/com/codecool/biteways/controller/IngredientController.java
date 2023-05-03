@@ -57,14 +57,17 @@ public class IngredientController {
                     @ApiResponse(responseCode = "500", description = "An error occurred while processing the request")
             }
     )
-    @PostMapping(value = "addtorecipe")
-    public ResponseEntity<?> addIngredientToRecipe(@Valid @RequestBody Ingredient ingredient, BindingResult bindingResult) {
+    @PostMapping(value = "/addtorecipe/{id}")
+    public ResponseEntity<?> addIngredientToRecipe(
+            @PathVariable("id") Long id,
+            @Valid @RequestBody IngredientDto ingredientDto,
+            BindingResult bindingResult) throws RecordNotFoundException {
         if (bindingResult.hasErrors()) {
             List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
             return ResponseEntity.badRequest().body(errors);
         } else {
-            Ingredient savedIngredient = ingredientService.saveIngredient(ingredient);
-            return ResponseEntity.ok(savedIngredient);
+            IngredientDto newIngredientToRecipe = ingredientService.addIngredientToRecipe(id,ingredientDto);
+            return ResponseEntity.ok(newIngredientToRecipe);
         }
     }
 
