@@ -5,6 +5,7 @@ import com.codecool.biteways.model.Menu;
 import com.codecool.biteways.model.Recipe;
 import com.codecool.biteways.model.dto.MenuDto;
 import com.codecool.biteways.repository.MenuRepository;
+import com.codecool.biteways.repository.RecipeRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,6 +26,9 @@ class MenuServiceTest {
 
     @Mock
     private MenuRepository menuRepository;
+
+    @Mock
+    private RecipeRepository recipeRepository;
 
     @InjectMocks
     private MenuService menuService;
@@ -91,6 +95,9 @@ class MenuServiceTest {
 
     @Test
     void testDeleteMenu_menuExists_menuDeleted() {
+        Menu menu = new Menu(1L, "New Menu", List.of(RECIPES.get(1)));
+        when(menuRepository.findById(1L)).thenReturn(Optional.of(menu));
+        when(recipeRepository.save(any(Recipe.class))).thenReturn(any());
         menuService.deleteMenu(1L);
         verify(menuRepository).deleteById(any());
     }

@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -101,17 +102,20 @@ public class IngredientServiceTest {
     }
 
     @Test
-    void deleteIngredient_twoDeleteInvokedTwoPerformed() {
+    void deleteIngredient_twoDeleteInvokedTwoPerformed() throws RecordNotFoundException {
+        when(ingredientRepository.findById(any())).thenReturn(Optional.ofNullable(ingredientList.get(0)));
+        when(ingredientRepository.findAll()).thenReturn(Collections.emptyList());
         ingredientService.deleteIngredient(1L);
         ingredientService.deleteIngredient(1L);
-        assertThat(ingredientRepository.findById(1L)).isEmpty();
+        assertThat(ingredientRepository.findAll()).isEmpty();
         verify(ingredientRepository, times(2)).deleteById(1L);
     }
 
     @Test
-    void deleteIngredient_shouldCallRepositoryWithCorrectId() {
+    void deleteIngredient_shouldCallRepositoryWithCorrectId() throws RecordNotFoundException {
         Long id = 1L;
         doNothing().when(ingredientRepository).deleteById(id);
+        when(ingredientRepository.findById(1L)).thenReturn(Optional.ofNullable(ingredientList.get(0)));
         ingredientService.deleteIngredient(id);
         verify(ingredientRepository, times(1)).deleteById(id);
     }

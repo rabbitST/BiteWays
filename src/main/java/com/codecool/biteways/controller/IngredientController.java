@@ -51,6 +51,24 @@ public class IngredientController {
     }
 
     @Operation(
+            summary = "Create a new Ingredient entity and add to a Recipe",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "The Ingredient entity was successfully created"),
+                    @ApiResponse(responseCode = "500", description = "An error occurred while processing the request")
+            }
+    )
+    @PostMapping(value = "addtorecipe")
+    public ResponseEntity<?> addIngredientToRecipe(@Valid @RequestBody Ingredient ingredient, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errors = bindingResult.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+            return ResponseEntity.badRequest().body(errors);
+        } else {
+            Ingredient savedIngredient = ingredientService.saveIngredient(ingredient);
+            return ResponseEntity.ok(savedIngredient);
+        }
+    }
+
+    @Operation(
             summary = "Retrieve all Ingredient entities",
             responses = {
                     @ApiResponse(responseCode = "200", description = "The list of all Ingredient entities"),
@@ -112,7 +130,7 @@ public class IngredientController {
     @DeleteMapping("/{id}")
     public void deleteIngredient(
             @PathVariable("id") Long id
-    ) {
+    ) throws RecordNotFoundException {
         ingredientService.deleteIngredient(id);
     }
 

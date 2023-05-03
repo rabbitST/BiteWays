@@ -2,8 +2,10 @@ package com.codecool.biteways.service;
 
 import com.codecool.biteways.exceptions.RecordNotFoundException;
 import com.codecool.biteways.model.Ingredient;
+import com.codecool.biteways.model.Recipe;
 import com.codecool.biteways.model.dto.IngredientDto;
 import com.codecool.biteways.repository.IngredientRepository;
+import com.codecool.biteways.repository.RecipeRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,9 +17,11 @@ import java.util.List;
 public class IngredientService {
 
     private final IngredientRepository ingredientRepository;
+    private final RecipeRepository recipeRepository;
 
-    public IngredientService(IngredientRepository ingredientRepository) {
+    public IngredientService(IngredientRepository ingredientRepository, RecipeRepository recipeRepository) {
         this.ingredientRepository = ingredientRepository;
+        this.recipeRepository = recipeRepository;
     }
 
     public Ingredient saveIngredient(Ingredient ingredient) {
@@ -54,7 +58,14 @@ public class IngredientService {
         return updateIngredient;
     }
 
-    public void deleteIngredient(Long id) {
+    public void deleteIngredient(Long id) throws RecordNotFoundException {
+        Ingredient ingredient = ingredientRepository.
+                findById(id).
+                orElseThrow(
+                        () -> new RecordNotFoundException(String.format("Requested ID: %s not found!", id))
+                );
+        ingredient.setRecipe(null);
+        ingredientRepository.save(ingredient);
         ingredientRepository.deleteById(id);
     }
 
@@ -62,4 +73,12 @@ public class IngredientService {
         return new ModelMapper().map(ingredient, IngredientDto.class);
     }
 
+    public IngredientDto addIngredientToRecipe(Long recipeId, IngredientDto ingredientDto) throws RecordNotFoundException {
+        Ingredient ingredient = new ModelMapper().map(ingredientDto, Ingredient.class);
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new RecordNotFoundException(String.format("Requested ID: %s not found!", recipeId)));
+        ingredient.setRecipe(recipe);
+        this.saveIngredient(ingredient);
+
+        return new ModelMapper().map(ingredient, IngredientDto.class);
+    }
 }

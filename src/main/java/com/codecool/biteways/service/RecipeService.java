@@ -10,10 +10,12 @@ import com.codecool.biteways.repository.IngredientRepository;
 import com.codecool.biteways.repository.RecipeRepository;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -46,7 +48,7 @@ public class RecipeService {
     }
 
     public RecipeDto findRecipeById(Long id) throws RecordNotFoundException {
-        return this.recipeToDto(recipeRepository.findById(id).orElseThrow( () -> new RecordNotFoundException(
+        return this.recipeToDto(recipeRepository.findById(id).orElseThrow(() -> new RecordNotFoundException(
                 String.format("Requested ID: %s not found!", id)
         )));
     }
@@ -69,15 +71,14 @@ public class RecipeService {
     }
 
     public void deleteRecipe(Long id) {
-        try {
-            Recipe recipe = recipeRepository.findById(id).get();
+        Recipe recipe = recipeRepository.findById(id).orElseThrow();
+        if (recipe.getMenuList().isEmpty()){
+            recipe.setMenuList(new ArrayList<>());
+            recipe.setIngredientList(new ArrayList<>());
+            recipeRepository.save(recipe);
             recipeRepository.deleteById(id);
-        } catch (DataIntegrityViolationException | NoSuchElementException e) {
-            // Handle the case where the recipe with the specified ID is not found
-            e.printStackTrace();
         }
     }
-
 
     public RecipeDto recipeToDto(Recipe recipe) {
         List<Ingredient> sortedIngredients = recipe.getIngredientList().stream()
@@ -89,7 +90,6 @@ public class RecipeService {
 
         return recipeDto;
     }
-
 
     public List<Ingredient> rawTextToIngredientList(RawRecipe rawRecipe, Recipe recipe) {
         List<Ingredient> ingredientList = new ArrayList<>();

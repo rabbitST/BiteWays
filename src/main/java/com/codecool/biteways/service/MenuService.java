@@ -9,6 +9,7 @@ import com.codecool.biteways.model.dto.MenuDto;
 import com.codecool.biteways.repository.MenuRepository;
 import com.codecool.biteways.repository.RecipeRepository;
 import jakarta.transaction.Transactional;
+import org.hibernate.Hibernate;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +60,15 @@ public class MenuService {
     }
 
     public void deleteMenu(Long id) {
+        Menu menu = menuRepository.findById(id).orElseThrow();
+        menu.getRecipeList().forEach(
+                recipe -> {
+                    recipe.setMenuList(new ArrayList<>());
+                    recipeRepository.save(recipe);
+                }
+        );
+        menu.setRecipeList(new ArrayList<>());
+        menuRepository.save(menu);
         menuRepository.deleteById(id);
     }
 
