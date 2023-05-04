@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>B i t e W a y s</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="#"> BiteWays API</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="Ingredient.html">Ingredients</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Recipe.html">Recipes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Menu.html">Menus</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <div id="app">
+                <h1>Add New Ingredient</h1>
+                <form>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" name="name" v-model="ingredient.name" required>
+                        <span v-if="!ingredient.name" id="name-warning" class="text-danger">Name is required</span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quantity" class="form-label">Quantity</label>
+                        <input type="text" class="form-control" name="quantity" v-model="ingredient.quantity" required>
+                        <span v-if="!ingredient.quantity" id="quantity-warning" class="text-danger">Quantity is required</span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="unitType" class="form-label">Unit Type</label>
+                        <select class="form-select" name="unitType" v-model="ingredient.unitType" required>
+                            <option value="">Select unit type</option>
+                            <option v-for="unitType in unitTypes" :value="unitType">{{ unitType }}</option>
+                        </select>
+                        <span v-if="!ingredient.unitType" id="unitType-warning" class="text-danger">Unit type is required</span>
+                    </div>
+                    <button type="submit" class="btn btn-primary" @click.prevent="submitForm()">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            ingredient: {
+                name: '',
+                quantity: '',
+                unitType: ''
+            },
+            unitTypes: []
+        },
+        mounted() {
+            this.fetchUnitTypes();
+        },
+        methods: {
+            fetchUnitTypes() {
+                fetch('http://localhost:8080/api/biteways/ingredient/unittype', {
+                    method: 'GET',
+                    headers: {}
+                })
+                    .then(response => {
+                        response.json().then(res => {
+                            this.unitTypes = res;
+                            // this.ingredient.unitType = res[0];
+                        });
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
+            },
+            submitForm() {
+                const formData = $('form').serializeArray();
+                const ingredient = formData.reduce((obj, item) => {
+                    obj[item.name] = item.value;
+                    return obj;
+                }, {});
+
+                // Check if any required fields are empty
+                const requiredFields = ['name', 'quantity', 'unitType'];
+                let allFieldsFilled = true;
+
+                requiredFields.forEach(field => {
+                    if (!ingredient[field]) {
+                        // Display warning message and mark field as invalid
+                        const span = document.getElementById(`${field}-warning`);
+                        span.innerText = 'Please fill in this field.';
+                        span.classList.add('text-danger');
+                        allFieldsFilled = false;
+                    }
+                });
+
+                // If any required fields are empty, prevent form submission
+                if (!allFieldsFilled) {
+                    return;
+                }
+
+                // All required fields are filled, proceed with submission
+                fetch('http://localhost:8080/api/biteways/ingredient', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(ingredient)
+                })
+                    .then(() => {
+                        window.location.href = 'Ingredient.html';
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
+            }
+
+        }
+    });
+</script>
+</body>
+</html>

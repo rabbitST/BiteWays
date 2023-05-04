@@ -3,6 +3,7 @@ package com.codecool.biteways.controller;
 import com.codecool.biteways.exceptions.RecordNotFoundException;
 import com.codecool.biteways.model.Ingredient;
 import com.codecool.biteways.model.dto.IngredientDto;
+import com.codecool.biteways.model.enums.UnitType;
 import com.codecool.biteways.service.IngredientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -81,7 +83,6 @@ public class IngredientController {
     @GetMapping
     public List<IngredientDto> findAllIngredient() {
         List<IngredientDto> ingredientDtoList=ingredientService.findAllIngredient();
-        System.out.println(ingredientDtoList);
         return ingredientDtoList;
     }
 
@@ -135,6 +136,19 @@ public class IngredientController {
             @PathVariable("id") Long id
     ) throws RecordNotFoundException {
         ingredientService.deleteIngredient(id);
+    }
+
+    @Operation(
+            summary = "Return the available unitTypes",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Available UnitTypes returned"),
+                    @ApiResponse(responseCode = "500", description = "An error occurred while processing the request")
+            }
+    )
+    @GetMapping("/unittype")
+    public List<UnitType> findAllUnitType(
+    ) throws RecordNotFoundException {
+        return Arrays.stream(UnitType.values()).toList();
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

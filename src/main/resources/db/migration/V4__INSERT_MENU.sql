@@ -1,6 +1,6 @@
-INSERT INTO menu(name) values('Menu offer from 04.10-04.16');
-INSERT INTO menu(name) values('Menu offer from 04.17-04.23');
-INSERT INTO menu(name) values('Menu offer from 04.24-04.30');
+INSERT INTO menu(name) values('Menu offer from 04.10 to 04.16');
+INSERT INTO menu(name) values('Menu offer from 04.17 to 04.23');
+INSERT INTO menu(name) values('Menu offer from 04.24 to 04.30');
 
 INSERT INTO menu_recipe(menu_id, recipe_id) values(1,1);
 INSERT INTO menu_recipe(menu_id, recipe_id) values(1,2);
