@@ -59,7 +59,6 @@
                         <td>
                             <button @click="updateIngredient(ingredient.id)" class="btn btn-primary">Update</button>
                             <button @click="deleteIngredient(ingredient.id)" class="btn btn-light">Delete</button>
-
                         </td>
                     </tr>
                     </tbody>
@@ -98,7 +97,6 @@
                     headers: {}
                 })
                     .then(() => {
-                        // remove the deleted ingredient from the ingredients array
                         this.ingredients = this.ingredients.filter(ingredient => ingredient.id !== id);
                     })
                     .catch(err => {
@@ -106,7 +104,13 @@
                     });
             },
             updateIngredient(id) {
-                window.location.href = `update-ingredient.html?id=${id}`;
+                const getQueryString = () => {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    return Object.fromEntries(urlParams.entries());
+                }
+
+                const recipeId = getQueryString().id;
+                window.location.href = `update-ingredient.html?id=${id}&url=Ingredient`;
             }
         }
     });

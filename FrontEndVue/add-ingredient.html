@@ -11,7 +11,8 @@
 <div class="container">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <a class="navbar-brand" href="#"> BiteWays API</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -41,7 +42,8 @@
                     <div class="mb-3">
                         <label for="quantity" class="form-label">Quantity</label>
                         <input type="text" class="form-control" name="quantity" v-model="ingredient.quantity" required>
-                        <span v-if="!ingredient.quantity" id="quantity-warning" class="text-danger">Quantity is required</span>
+                        <span v-if="!ingredient.quantity" id="quantity-warning"
+                              class="text-danger">Quantity is required</span>
                     </div>
                     <div class="mb-3">
                         <label for="unitType" class="form-label">Unit Type</label>
@@ -90,6 +92,13 @@
                     });
             },
             submitForm() {
+                const getQueryString = () => {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    return Object.fromEntries(urlParams.entries());
+                }
+                const id = getQueryString().id;
+                const callerUrl=getQueryString().callerUrl
+
                 const formData = $('form').serializeArray();
                 const ingredient = formData.reduce((obj, item) => {
                     obj[item.name] = item.value;
@@ -115,8 +124,15 @@
                     return;
                 }
 
+                let fetchUrl = 'http://localhost:8080/api/biteways/ingredient';
+                let redirectTo='Ingredient.html';
+                if(id){
+                    fetchUrl='http://localhost:8080/api/biteways/ingredient/addtorecipe/'+id;
+                    redirectTo=callerUrl+".html?id="+id;
+                }
+
                 // All required fields are filled, proceed with submission
-                fetch('http://localhost:8080/api/biteways/ingredient', {
+                fetch(fetchUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -124,7 +140,7 @@
                     body: JSON.stringify(ingredient)
                 })
                     .then(() => {
-                        window.location.href = 'Ingredient.html';
+                        window.location.href = redirectTo;
                     })
                     .catch(err => {
                         console.error(err);
