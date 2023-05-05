@@ -58,15 +58,17 @@ public class RecipeService {
         Recipe recipe = recipeRepository.findById(id).orElseThrow();
         recipe.setName(update.getName());
         recipe.setInstructions(update.getInstructions());
-        update.
-                getIngredientList().
-                forEach(i -> {
-                    Ingredient savedIngredient = ingredientRepository.findById(i.getId()).orElseThrow();
-                    savedIngredient.setName(i.getName());
-                    savedIngredient.setQuantity(i.getQuantity());
-                    savedIngredient.setUnitType(i.getUnitType());
-                    savedIngredient.setRecipe(recipe);
-                });
+        if(update.getIngredientList()!=null){
+            update.
+                    getIngredientList().
+                    forEach(i -> {
+                        Ingredient savedIngredient = ingredientRepository.findById(i.getId()).orElseThrow();
+                        savedIngredient.setName(i.getName());
+                        savedIngredient.setQuantity(i.getQuantity());
+                        savedIngredient.setUnitType(i.getUnitType());
+                        savedIngredient.setRecipe(recipe);
+                    });
+        }
         return recipe;
     }
 
