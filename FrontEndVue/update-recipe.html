@@ -6,88 +6,112 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-
-
-
-
-
-
 </head>
 <body>
 <div class="container">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <a class="navbar-brand" href="#"> BiteWays API</a>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+        <a class="navbar-brand" style="margin-left: 15px;margin-right: 80px" href="#"> BiteWays API</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
+        <div class="collapse navbar-collapse " id="navbarNav">
+            <ul class="navbar-nav ">
                 <li class="nav-item">
-                    <a class="nav-link" href="Ingredient.html">Ingredients</a>
+                    <a class="nav-link" href="Menu.html">
+                        <i class="fas fa-table"></i> Menus
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="Recipe.html">Recipes</a>
+                    <a class="nav-link" href="Recipe.html">
+                        <i class="fas fa-utensils"></i> Recipes
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="Menu.html">Menus</a>
+                    <a class="nav-link" href="Ingredient.html">
+                        <i class="fas fa-carrot"></i> Ingredients
+                    </a>
                 </li>
             </ul>
         </div>
     </nav>
-    <div class="row justify-content-center">
+
+    <nav class="navbar navbar-expand-md bg-light navbar-link">
+        <div class="navbar-collapse collapse pt-2 pt-md-0" id="navbar2">
+            <a href="/" class="navbar-brand"></a>
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link px-2 pl-2  fw-bold" style="margin-left: 12rem" href="add-recipe.html">
+                        <i class="fas fa-plus"></i> Add Recipe</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="row justify-content-center mt-2">
         <div class="col-8">
             <div id="app">
-                <h3 class="h3 mt-5 mb-2 font-monospace mb-4" v-text="'update '+recipe.id+'. '+recipe.name"></h3>
-                <div>
-                    <p class="fw-bold">Ingredients</p>
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Quantity</th>
-                            <th>Unit Type</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="ingredient in ingredientList" :key="ingredient.id">
-                            <td>{{ ingredient.id }}</td>
-                            <td>{{ ingredient.name }}</td>
-                            <td>{{ ingredient.quantity }}</td>
-                            <td>{{ ingredient.unitType }}</td>
-                            <td>
-                                <button @click="updateIngredient(ingredient.id)" class="btn btn-outline-info">Update
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h3 class="h3 mt-2 mb-2 font-monospace mb-4" v-text="'update '+recipe.id+'. '+recipe.name"></h3>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <p class="fw-bold">Ingredients</p>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Quantity</th>
+                                    <th>Unit Type</th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="ingredient in ingredientList" :key="ingredient.id">
+                                    <td>{{ ingredient.id }}</td>
+                                    <td>{{ ingredient.name }}</td>
+                                    <td>{{ ingredient.quantity }}</td>
+                                    <td>{{ ingredient.unitType }}</td>
+                                    <td>
+                                        <button @click="updateIngredient(ingredient.id)" class="btn btn-outline-info">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button @click="deleteIngredient(ingredient.id)" class="btn btn-light">
+                                            <i class="fas fa-trash-alt"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div>
+                                <button @click="addIngredientToRecipe(recipe.id)"
+                                        class="btn btn-outline-secondary fw-bold mt-2 mb-3">
+                                    <i class="fas fa-plus"></i> Add Ingredient
                                 </button>
-                                <button @click="deleteIngredient(ingredient.id)" class="btn btn-light">Delete
-                                </button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <div>
-                        <button @click="addIngredientToRecipe(recipe.id)" class="btn btn-outline-secondary fw-bold mt-2 mb-3">
-                            <i class="fas fa-plus"></i>  Add Ingredient
-                        </button>
 
+                            </div>
+                        </div>
+                        <form>
+                            <input type="hidden" name="id" v-model="recipe.id">
+                            <div class="mb-3">
+                                <label for="name" class="form-label fw-bold">Name</label>
+                                <input type="text" class="form-control" name="name" v-model="recipe.name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="instructions" class="form-label fw-bold">Instructions</label>
+                                <textarea class="form-control" name="instructions" v-model="recipe.instructions"
+                                          maxlength="600"
+                                          rows="10" cols="30" required></textarea>
+                                <span v-if="!recipe.instructions" id="instructions-warning" class="text-danger">Instructions are required</span>
+                            </div>
+                            <button type="submit" class="btn btn-success" @click.prevent="submitForm()">
+                                <i class="fas fa-save me-2"></i>Save
+                            </button>
+                        </form>
                     </div>
                 </div>
-                <form>
-                    <input type="hidden" name="id" v-model="recipe.id">
-                    <div class="mb-3">
-                        <label for="name" class="form-label fw-bold">Name</label>
-                        <input type="text" class="form-control" name="name" v-model="recipe.name">
-                    </div>
-                    <div class="mb-3">
-                        <label for="instructions" class="form-label fw-bold">Instructions</label>
-                        <textarea class="form-control" name="instructions" v-model="recipe.instructions" maxlength="600"
-                                  rows="10" cols="30" required></textarea>
-                        <span v-if="!recipe.instructions" id="instructions-warning" class="text-danger">Instructions are required</span>
-                    </div>
-                    <button type="submit" class="btn btn-primary" @click.prevent="submitForm()">Submit</button>
-                </form>
             </div>
         </div>
     </div>

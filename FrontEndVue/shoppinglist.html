@@ -50,84 +50,87 @@
     </nav>
     <div class="row justify-content-center mt-2">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h1>Menus</h1>
-                </div>
-                <div class="card-body">
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="menu in menus" :key="menu.id">
-                            <td>{{ menu.id }}</td>
-                            <td>{{ menu.name }}</td>
-                            <td>
-                                <div class="btn-group w-100" role="group">
-                                    <button class="btn btn-outline-primary" @click="getMenuDetails(menu.id)">
-                                        <i class="fas fa-eye"></i> View
-                                    </button>
-                                    <button class="btn btn-outline-danger" @click="deleteMenu(menu.id)">
-                                        <i class="fas fa-trash-alt"></i> Delete
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="d-flex bg-light text-center">
+                <h1 class="h3 mb-0 mx-auto">Shopping list for {{ menuName }}</h1>
+            </div>
+            <div class="d-flex justify-content-between my-3">
+                <button @click="backToMenu()" class="btn btn-outline-secondary"><i class="fas fa-chevron-left"></i> Back</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Unit</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(shoppingItem, index) in shoppingItems" :key="index">
+                        <td>{{ shoppingItem.itemName }}</td>
+                        <td>{{ shoppingItem.quantity }}</td>
+                        <td>{{ shoppingItem.unitType }}</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </div>
+
 
 <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
 <script>
     new Vue({
         el: '#app',
         data: {
-            menus: []
+            shoppingItems: [],
+            shoppingItem: {},
+            menuName: '',
+            menuId:'0'
         },
         mounted() {
-            this.fetchData()
+            this.fetchData();
         },
         methods: {
             fetchData() {
-                fetch('http://localhost:8080/api/biteways/menu', {
+                const getQueryString = () => {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    return Object.fromEntries(urlParams.entries());
+                }
+
+                this.menuId = getQueryString().id;
+                fetch(`http://localhost:8080/api/biteways/menu/shoppinglist/${this.menuId}`, {
                     method: 'GET',
                     headers: {}
                 })
                     .then(response => {
-                        response.json().then(res => this.menus = res);
+                        response.json().then(res => {
+                            this.shoppingItems = res;
+                        });
                     })
                     .catch(err => {
                         console.error(err);
                     });
-            },
-            getMenuDetails(id) {
-                window.location.href = `menu-details.html?id=${id}`;
-            },
-            deleteMenu(id) {
-                console.log(`delete --> id. ${id}`);
-                fetch(`http://localhost:8080/api/biteways/menu/${id}`, {
-                    method: 'DELETE',
+                fetch(`http://localhost:8080/api/biteways/menu/${this.menuId}`, {
+                    method: 'GET',
                     headers: {}
                 })
-                    .then(() => {
-                        this.fetchData();
-                        this.recipes = this.menus.filter(menu => menu.id !== id);
+                    .then(response => {
+                        response.json().then(res => {
+                            this.menuName = res.name;
+                        });
                     })
                     .catch(err => {
                         console.error(err);
                     });
+            },
+            backToMenu(){
+                window.location.href=`menu-details.html?id=${this.menuId}`;
             }
         }
     });
 </script>
+
 </body>
 </html>

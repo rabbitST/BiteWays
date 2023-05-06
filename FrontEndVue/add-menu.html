@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>B i t e W a y s</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+</head>
+<body>
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+        <a class="navbar-brand" style="margin-left: 15px;margin-right: 80px" href="#"> BiteWays API</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse " id="navbarNav">
+            <ul class="navbar-nav ">
+                <li class="nav-item">
+                    <a class="nav-link" href="Menu.html">
+                        <i class="fas fa-table"></i> Menus
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Recipe.html">
+                        <i class="fas fa-utensils"></i> Recipes
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="Ingredient.html">
+                        <i class="fas fa-carrot"></i> Ingredients
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <nav class="navbar navbar-expand-md bg-light navbar-link">
+        <div class="navbar-collapse collapse pt-2 pt-md-0" id="navbar2">
+            <a href="/" class="navbar-brand"></a>
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link px-2 pl-2  fw-bold" style="margin-left: 12rem" href="add-menu.html">
+                        <i class="fas fa-plus"></i> Add Menu</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <div id="app">
+                <div class="card p-3">
+                    <h1 class="mb-4" style="font-family: Montserrat,sans-serif">Create New Menu</h1>
+                    <div class="row mb-3" v-for="(recipe, index) in menuData.recipeList" :key="index">
+                        <div class="col-4 day">
+                            {{
+                                ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index]
+                            }}
+                        </div>
+                        <div class="col-8 recipe">
+                            {{ recipe.name }}
+                        </div>
+                        <input :id="'recipe-' + index" class="form-control" :name="'recipe-' + index"
+                               :value="recipe.name" type="hidden">
+                        <input type="hidden" :name="'recipe-' + index + '-id'" :value="recipe.id">
+                        <input type="hidden" :name="'recipe-' + index + '-ingredients'"
+                               :value="JSON.stringify(recipe.ingredients)">
+                    </div>
+                    <form>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" name="name" v-model="menuData.name" required>
+                            <span v-if="!menuData.name" id="name-warning" class="text-danger">Name is required</span>
+                        </div>
+                        <button type="submit" class="btn btn-secondary" @click.prevent="submitForm()">
+                            <i class="fas fa-save mr-2"></i>
+                            Save
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            menuData: {
+                name: '',
+                recipeList: []
+            }
+        },
+        created() {
+            fetch('http://localhost:8080/api/biteways/menu/createmenu')
+                .then(response => response.json())
+                .then(jsonData => {
+                    // modify the jsonData to match the expected format
+                    let formattedData = {
+                        id: jsonData.id,
+                        name: jsonData.name,
+                        recipeList: jsonData.recipeList.map(recipe => {
+                            return {
+                                id: recipe.id,
+                                name: recipe.name,
+                                instructions: recipe.instructions,
+                                downloaded: recipe.downloaded,
+                                ingredientList: recipe.ingredientList.map(ingredient => {
+                                    return {
+                                        id: ingredient.id,
+                                        name: ingredient.name,
+                                        quantity: ingredient.quantity,
+                                        unitType: ingredient.unitType
+                                    };
+                                })
+                            };
+                        })
+                    };
+                    this.menuData = formattedData;
+                })
+                .catch(error => console.error(error));
+        },
+        methods: {
+            submitForm() {
+                if (!this.menuData.name) {
+                    $('#name-warning').show();
+                } else {
+                    $('#name-warning').hide();
+                    console.log('this.menuData:', this.menuData);
+                    const data = this.menuData;
+                    fetch('http://localhost:8080/api/biteways/menu', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                        .then(response => response.json())
+                        .then(jsonData => {
+                            window.location.href="Menu.html";
+                        })
+                        .catch(error => console.error(error));
+                }
+            }
+        }
+    });
+</script>
+
+
+</body>
+</html>
