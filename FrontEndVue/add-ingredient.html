@@ -52,33 +52,37 @@
             <div id="app">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="h3 mb-2 font-monospace" >Add Ingredient</h3>
+                        <h3 class="h3 mb-2 font-monospace">Add Ingredient</h3>
                     </div>
                     <div class="card-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Name</label>
-                        <input type="text" class="form-control" name="name" v-model="ingredient.name" required>
-                        <span v-if="!ingredient.name" id="name-warning" class="text-danger">Name is required</span>
+                        <form>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" name="name" v-model="ingredient.name" required>
+                                <span v-if="!ingredient.name" id="name-warning"
+                                      class="text-danger">Name is required</span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="quantity" class="form-label">Quantity</label>
+                                <input type="text" class="form-control" name="quantity" v-model="ingredient.quantity"
+                                       required>
+                                <span v-if="!ingredient.quantity" id="quantity-warning"
+                                      class="text-danger">Quantity is required</span>
+                            </div>
+                            <div class="mb-3">
+                                <label for="unitType" class="form-label">Unit Type</label>
+                                <select class="form-select" name="unitType" v-model="ingredient.unitType" required>
+                                    <option value="">Select unit type</option>
+                                    <option v-for="unitType in unitTypes" :value="unitType">{{ unitType }}</option>
+                                </select>
+                                <span v-if="!ingredient.unitType" id="unitType-warning" class="text-danger">Unit type is required</span>
+                            </div>
+                            <button type="submit" class="btn btn-danger" @click.prevent="submitForm()">
+                                <i class="fas fa-save"></i> Save
+                            </button>
+                        </form>
                     </div>
-                    <div class="mb-3">
-                        <label for="quantity" class="form-label">Quantity</label>
-                        <input type="text" class="form-control" name="quantity" v-model="ingredient.quantity" required>
-                        <span v-if="!ingredient.quantity" id="quantity-warning"
-                              class="text-danger">Quantity is required</span>
-                    </div>
-                    <div class="mb-3">
-                        <label for="unitType" class="form-label">Unit Type</label>
-                        <select class="form-select" name="unitType" v-model="ingredient.unitType" required>
-                            <option value="">Select unit type</option>
-                            <option v-for="unitType in unitTypes" :value="unitType">{{ unitType }}</option>
-                        </select>
-                        <span v-if="!ingredient.unitType" id="unitType-warning" class="text-danger">Unit type is required</span>
-                    </div>
-                    <button type="submit" class="btn btn-danger" @click.prevent="submitForm()">
-                        <i class="fas fa-save"></i> Save
-                    </button>
-                </form>
+                </div>
             </div>
         </div>
     </div>
@@ -121,7 +125,7 @@
                     return Object.fromEntries(urlParams.entries());
                 }
                 const id = getQueryString().id;
-                const callerUrl=getQueryString().callerUrl
+                const callerUrl = getQueryString().callerUrl
 
                 const formData = $('form').serializeArray();
                 const ingredient = formData.reduce((obj, item) => {
@@ -149,10 +153,10 @@
                 }
 
                 let fetchUrl = 'http://localhost:8080/api/biteways/ingredient';
-                let redirectTo='Ingredient.html';
-                if(id){
-                    fetchUrl='http://localhost:8080/api/biteways/ingredient/addtorecipe/'+id;
-                    redirectTo=callerUrl+".html?id="+id;
+                let redirectTo = 'Ingredient.html';
+                if (id) {
+                    fetchUrl = 'http://localhost:8080/api/biteways/ingredient/addtorecipe/' + id;
+                    redirectTo = callerUrl + ".html?id=" + id;
                 }
 
                 // All required fields are filled, proceed with submission

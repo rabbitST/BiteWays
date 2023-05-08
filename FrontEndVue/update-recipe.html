@@ -106,7 +106,7 @@
                                           rows="10" cols="30" required></textarea>
                                 <span v-if="!recipe.instructions" id="instructions-warning" class="text-danger">Instructions are required</span>
                             </div>
-                            <button type="submit" class="btn btn-success" @click.prevent="submitForm()">
+                            <button type="submit" class="btn btn-danger" style="opacity: 0.8" @click.prevent="updateRecipe()">
                                 <i class="fas fa-save me-2"></i>Save
                             </button>
                         </form>
@@ -150,7 +150,7 @@
                         console.error(err);
                     });
             },
-            submitForm() {
+            updateRecipe() {
                 const getQueryString = () => {
                     const urlParams = new URLSearchParams(window.location.search);
                     return Object.fromEntries(urlParams.entries());
