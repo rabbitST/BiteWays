@@ -7,7 +7,7 @@ shopping list for you, ensuring you have all the necessary ingredients on hand.*
 
 ### Frontend
 FrontEnd folder: Biteways/FrontEndVue  
-Online on github.io: [BiteWaysAPI](https://rabbitst.github.io/biteways.github.io/Recipe.html)  
+Online on github.io: [BiteWaysAPI](https://rabbitst.github.io/biteways.github.io/index.html)  
 -First run the API locally and then visit the link for the frontend. 
 
 ### Swagger
