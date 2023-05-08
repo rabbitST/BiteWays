@@ -26,14 +26,14 @@ public class Recipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 3, max = 30, message = "Please enter a recipe name that is maximum 30 characters in length.")
-    @Pattern(regexp = "^[a-zA-Z0-9\\s\\-.]*$", message = "The recipe name can only contain letters, numbers, hyphens, spaces.")
+    @Size(min = 3, max = 50, message = "Please enter a recipe name that is maximum 30 characters in length.")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s\\-.éáíóöőüúÉÁÍÓÖŐÜÚ]*$", message = "The recipe name can only contain letters, numbers, hyphens, spaces.")
     private String name;
 
     private int downloaded;
 
     @Size(max = 600, message = "Please enter instructions that are between 8 and 600 characters long.")
-    @Pattern(regexp = "^[a-zA-Z0-9\\s\\-.,\\\\ °/()\\n\\r\"'’]*$", message = "Please enter instructions that only contain letters, numbers, hyphens, quote, double quote and spaces.")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s\\-.,\\\\ °/()\\n\\r\"'’%<>]*$", message = "Please enter instructions that only contain letters, numbers, hyphens, quote, double quote and spaces.")
     private String instructions;
 
     @OneToMany(mappedBy = "recipe")

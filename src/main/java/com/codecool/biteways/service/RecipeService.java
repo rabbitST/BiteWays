@@ -111,7 +111,8 @@ public class RecipeService {
     }
 
     private static void processIngredientLine(String line, Ingredient newIngredient) {
-        Matcher matcher = Pattern.compile("^([0-9]+ ?[A-Za-z]+)\\b").matcher(line);
+        Matcher matcher = Pattern.compile("^([0-9]+(?:[,.][0-9]+)? ?[A-Za-z]+)\\b").matcher(line);
+
         if (matcher.find()) {
             String unit = matcher.group().replaceAll("[^a-zA-Z]", "").toUpperCase();
             setUnitType(line, newIngredient, matcher, unit);
@@ -123,7 +124,7 @@ public class RecipeService {
     private static void setUnitType(String line, Ingredient newIngredient, Matcher matcher, String unit) {
         if (isUnitTypeValid(unit)) {
             String ingredientName = line.substring(matcher.end()).trim();
-            Float quantity = Float.valueOf(matcher.group().replaceAll("\\D", ""));
+            Float quantity = Float.valueOf(matcher.group().replaceAll("[^0-9\\\\,.]", "").replaceAll("[,.]","."));
             UnitType unitType = UnitType.valueOf(unit);
             setIngredientProperties(newIngredient, ingredientName, quantity, unitType);
         } else {

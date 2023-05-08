@@ -23,8 +23,8 @@ public class RecipeDto {
     private Long id;
 
     @NotBlank(message = "Please provide a name for the recipe.")
-    @Size(min = 3, max = 30, message = "Please enter a recipe name that is between 3 and 30 characters in length.")
-    @Pattern(regexp = "^[a-zA-Z0-9\\s\\-.]*$", message = "The recipe name can only contain letters, numbers, hyphens, spaces.")
+    @Size(min = 3, max = 50, message = "Please enter a recipe name that is between 3 and 30 characters in length.")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s\\-.éáíóöőüúÉÁÍÓÖŐÜÚ]*$", message = "The recipe name can only contain letters, numbers, hyphens, spaces.")
     private String name;
 
     private int downloaded;

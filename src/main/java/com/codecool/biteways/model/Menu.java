@@ -27,7 +27,7 @@ public class Menu {
 
     @NotBlank(message = "Please provide a name for the menu.")
     @Size(min = 3, max = 50, message = "Please enter a menu name that is between 3 and 30 characters in length.")
-    @Pattern(regexp = "^[a-zA-Z0-9\\s\\-.]*$", message = "The menu name can only contain letters, numbers, hyphens, spaces.")
+    @Pattern(regexp = "^[a-zA-Z0-9\\s\\-.éáíóöőüúÉÁÍÓÖŐÜÚ]*$", message = "The menu name can only contain letters, numbers, hyphens, spaces.")
     private String name;
 
     @ManyToMany(cascade = {
