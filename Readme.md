@@ -3,7 +3,15 @@
 *With BiteWays, you can effortlessly store all your favorite recipes in one place.</br>
 BiteWays planning your weekly menu and provide a convenient shopping list feature.</br> 
 Simply select the menu for the week, and BiteWays will automatically generate a</br> 
-shopping list for you, ensuring you have all the necessary ingredients on hand.*  
+shopping list for you, ensuring you have all the necessary ingredients on hand.*
+
+### Backend
+Menu controller  
+http://localhost:8080/api/biteways/menu    
+Recipe controller  
+http://localhost:8080/api/biteways/recipe    
+Ingredient controller  
+http://localhost:8080/api/biteways/ingredient  
 
 ### Frontend
 *First run the API locally and then visit the link for the frontend.*  
