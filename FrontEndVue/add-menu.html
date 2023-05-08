@@ -53,35 +53,40 @@
     <div class="row justify-content-center mt-2">
         <div class="col-8">
             <div id="app">
-                <div class="card p-3">
-                    <h1 class="mb-4" style="font-family: Montserrat,sans-serif">Create New Menu</h1>
-                    <div class="row mb-3" v-for="(recipe, index) in menuData.recipeList" :key="index">
-                        <div class="col-4 day">
-                            {{
-                                ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index]
-                            }}
-                        </div>
-                        <div class="col-8 recipe">
-                            {{ recipe.name }}
-                        </div>
-                        <input :id="'recipe-' + index" class="form-control" :name="'recipe-' + index"
-                               :value="recipe.name" type="hidden">
-                        <input type="hidden" :name="'recipe-' + index + '-id'" :value="recipe.id">
-                        <input type="hidden" :name="'recipe-' + index + '-ingredients'"
-                               :value="JSON.stringify(recipe.ingredients)">
+                <div class="card ">
+                    <div class="card-header">
+                        <h3 class="font-monospace" >Create New Menu</h3>
                     </div>
-                    <form>
-                        <div class="mb-3">
-                            <label for="name" class="form-label fw-bold">Name</label>
-                            <input type="text" class="form-control" name="name" v-model="menuData.name" required>
-                            <span v-if="!menuData.name" id="name-warning" class="text-danger">Name is required</span>
+                    <div class="card-body">
+                        <div class="row mb-3" v-for="(recipe, index) in menuData.recipeList" :key="index">
+                            <div class="col-4 day">
+                                {{
+                                ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][index]
+                                }}
+                            </div>
+                            <div class="col-8 recipe">
+                                {{ recipe.name }}
+                            </div>
+                            <input :id="'recipe-' + index" class="form-control" :name="'recipe-' + index"
+                                   :value="recipe.name" type="hidden">
+                            <input type="hidden" :name="'recipe-' + index + '-id'" :value="recipe.id">
+                            <input type="hidden" :name="'recipe-' + index + '-ingredients'"
+                                   :value="JSON.stringify(recipe.ingredients)">
                         </div>
-                        <button type="submit" class="btn btn-secondary" @click.prevent="submitForm()">
-                            <i class="fas fa-save mr-2"></i>
-                            Save
-                        </button>
+                        <form>
+                            <div class="mb-3">
+                                <label for="name" class="form-label fw-bold">Name</label>
+                                <input type="text" class="form-control" name="name" v-model="menuData.name" required>
+                                <span v-if="!menuData.name" id="name-warning"
+                                      class="text-danger">Name is required</span>
+                            </div>
+                            <button type="submit" class="btn btn-secondary" @click.prevent="submitForm()">
+                                <i class="fas fa-save mr-2"></i>
+                                Save
+                            </button>
 
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -146,7 +151,7 @@
                     })
                         .then(response => response.json())
                         .then(jsonData => {
-                            window.location.href="Menu.html";
+                            window.location.href = "Menu.html";
                         })
                         .catch(error => console.error(error));
                 }
