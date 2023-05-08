@@ -1,0 +1,284 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+class BiteWaysApplication {
+  + main(String[]): void
+}
+class Ingredient {
+  - recipe: Recipe
+  - quantity: Float
+  - name: String
+  - unitType: UnitType
+  - id: Long
+  + setQuantity(Float): void
+  + getId(): Long
+  + getName(): String
+  + getRecipe(): Recipe
+  + getQuantity(): Float
+  + getUnitType(): UnitType
+  + setId(Long): void
+  + setName(String): void
+  + setRecipe(Recipe): void
+  + setUnitType(UnitType): void
+  + hashCode(): int
+  + toString(): String
+  + equals(Object): boolean
+}
+class IngredientController {
+  - log: Logger
+  - ingredientService: IngredientService
+  + findIngredientById(Long): ResponseEntity<IngredientDto>
+  + updateIngredient(Long, IngredientDto, BindingResult): ResponseEntity<?>
+  + findAllUnitType(): List<UnitType>
+  + findAllIngredient(): List<IngredientDto>
+  + addIngredientToRecipe(Long, IngredientDto, BindingResult): ResponseEntity<?>
+  + handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException): ResponseEntity<Object>
+  + saveIngredient(Ingredient, BindingResult): ResponseEntity<?>
+  + deleteIngredient(Long): void
+}
+class IngredientDto {
+  - name: String
+  - quantity: Float
+  - unitType: UnitType
+  - recipe: Recipe
+  - id: Long
+  + setId(Long): void
+  + getId(): Long
+  + getName(): String
+  + getRecipe(): Recipe
+  + getQuantity(): Float
+  + getUnitType(): UnitType
+  + setName(String): void
+  + setUnitType(UnitType): void
+  + setRecipe(Recipe): void
+  + setQuantity(Float): void
+  + equals(Object): boolean
+  + toString(): String
+  + hashCode(): int
+}
+interface IngredientRepository << interface >>
+class IngredientService {
+  - ingredientRepository: IngredientRepository
+  - recipeRepository: RecipeRepository
+  + findAllIngredient(): List<IngredientDto>
+  + ingredientToDto(Ingredient): IngredientDto
+  + saveIngredient(Ingredient): Ingredient
+  + deleteIngredient(Long): void
+  + findIngredientById(Long): IngredientDto
+  + addIngredientToRecipe(Long, IngredientDto): IngredientDto
+  + updateIngredient(Long, IngredientDto): Ingredient
+}
+class Menu {
+  - name: String
+  - id: Long
+  - recipeList: List<Recipe>
+  + hashCode(): int
+  + toString(): String
+  + getId(): Long
+  + getName(): String
+  + getRecipeList(): List<Recipe>
+  + setId(Long): void
+  + setName(String): void
+  + setRecipeList(List<Recipe>): void
+  + equals(Object): boolean
+}
+class MenuController {
+  - menuService: MenuService
+  - log: Logger
+  + createMenu(): Menu
+  + saveMenu(Menu, BindingResult): ResponseEntity<?>
+  + updateMenu(Long, Menu, BindingResult): ResponseEntity<?>
+  + deleteMenu(Long): void
+  + createShoppingList(Long): List<ShoppingItem>
+  + findAllMenu(): List<MenuDto>
+  + findMenuById(Long): MenuDto
+  + handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException): ResponseEntity<Object>
+}
+class MenuDto {
+  - recipeList: List<Recipe>
+  - name: String
+  - id: Long
+  + setId(Long): void
+  + getId(): Long
+  + getName(): String
+  + getRecipeList(): List<Recipe>
+  + toString(): String
+  + setName(String): void
+  + setRecipeList(List<Recipe>): void
+  + equals(Object): boolean
+  # canEqual(Object): boolean
+  + hashCode(): int
+}
+interface MenuRepository << interface >>
+class MenuService {
+  - menuRepository: MenuRepository
+  - recipeRepository: RecipeRepository
+  - processIngredient(List<ShoppingItem>, Ingredient): void
+  + createMenu(): Menu
+  + menuToMenuDto(Menu): MenuDto
+  + deleteMenu(Long): void
+  - addToShoppingList(List<ShoppingItem>, Ingredient, int): void
+  + generateShoppingList(Long): List<ShoppingItem>
+  + findAllMenu(): List<MenuDto>
+  + saveMenu(Menu): MenuDto
+  + findMenuById(Long): MenuDto
+  - createMenuName(): String
+  + buildMenuName(LocalDate, LocalDate): StringBuilder
+  + updateMenu(Long, Menu): MenuDto
+}
+class RawRecipe {
+  - name: String
+  - instructions: String
+  - ingredients: String
+  + setName(String): void
+  + getName(): String
+  + getInstructions(): String
+  + getIngredients(): String
+  + setInstructions(String): void
+  + setIngredients(String): void
+  + equals(Object): boolean
+  # canEqual(Object): boolean
+  + hashCode(): int
+  + toString(): String
+}
+class Recipe {
+  - downloaded: int
+  - id: Long
+  - instructions: String
+  - menuList: List<Menu>
+  - name: String
+  ~ ingredientList: List<Ingredient>
+  + getId(): Long
+  + getName(): String
+  + setInstructions(String): void
+  + getDownloaded(): int
+  + getInstructions(): String
+  + setIngredientList(List<Ingredient>): void
+  + setMenuList(List<Menu>): void
+  + getIngredientList(): List<Ingredient>
+  + getMenuList(): List<Menu>
+  + setId(Long): void
+  + setName(String): void
+  + setDownloaded(int): void
+  + equals(Object): boolean
+  + hashCode(): int
+  + toString(): String
+}
+class RecipeController {
+  - log: Logger
+  - recipeService: RecipeService
+  + handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException): ResponseEntity<Object>
+  + findRecipeById(Long): ResponseEntity<?>
+  + updateRecipeById(Long, Recipe, BindingResult): ResponseEntity<?>
+  + deleteRecipe(Long): void
+  + findAllRecipe(): List<RecipeDto>
+  + saveRecipe(RawRecipe, BindingResult): ResponseEntity<?>
+}
+class RecipeDto {
+  - downloaded: int
+  - ingredientList: List<Ingredient>
+  - instructions: String
+  - name: String
+  - id: Long
+  + getId(): Long
+  + setIngredientList(List<Ingredient>): void
+  + getName(): String
+  + getDownloaded(): int
+  + getInstructions(): String
+  + getIngredientList(): List<Ingredient>
+  + setId(Long): void
+  + setName(String): void
+  + setDownloaded(int): void
+  + setInstructions(String): void
+  + equals(Object): boolean
+  + toString(): String
+  + hashCode(): int
+}
+interface RecipeRepository << interface >>
+class RecipeService {
+  - recipeRepository: RecipeRepository
+  - ingredientRepository: IngredientRepository
+  - setIngredientProperties(Ingredient, String, Float, UnitType): void
+  + rawTextToIngredientList(RawRecipe, Recipe): List<Ingredient>
+  - processIngredients(RawRecipe, Recipe, List<Ingredient>): void
+  + findAllRecipe(): List<RecipeDto>
+  - processIngredientLine(String, Ingredient): void
+  + findRecipeById(Long): RecipeDto
+  + recipeToDto(Recipe): RecipeDto
+  + saveRecipe(RawRecipe): Recipe
+  + updateRecipe(Long, Recipe): Recipe
+  + deleteRecipe(Long): void
+  - isUnitTypeValid(String): boolean
+  - setUnitType(String, Ingredient, Matcher, String): void
+}
+class RecordNotFoundException
+class ShoppingItem {
+  - unitType: UnitType
+  - itemName: String
+  - quantity: Float
+  + setQuantity(Float): void
+  + getItemName(): String
+  + getQuantity(): Float
+  + toString(): String
+  + getUnitType(): UnitType
+  + setItemName(String): void
+  + setUnitType(UnitType): void
+  + equals(Object): boolean
+  # canEqual(Object): boolean
+  + hashCode(): int
+}
+enum UnitType << enumeration >> {
+  + DKG: 
+  + PACKAGE: 
+  + TSPN: 
+  + TEASPOON: 
+  + DL: 
+  + TBSP: 
+  + CUP: 
+  + TSP: 
+  + PC: 
+  + UNIT: 
+  + L: 
+  + G: 
+  + TABLESPOON: 
+  + SPRINKLE: 
+  + PCS: 
+  + values(): UnitType[]
+  + valueOf(String): UnitType
+}
+class WebConfig {
+  + addCorsMappings(CorsRegistry): void
+  + hiddenHttpMethodFilter(): FilterRegistrationBean
+  + hiddenHttpMethodFilterAsync(): CompletableFuture<Void>
+}
+
+Ingredient              "1" *-[#595959,plain]-> "recipe\n1" Recipe                  
+Ingredient              "1" *-[#595959,plain]-> "unitType\n1" UnitType                
+IngredientController    "1" *-[#595959,plain]-> "ingredientService\n1" IngredientService       
+IngredientDto           "1" *-[#595959,plain]-> "recipe\n1" Recipe                  
+IngredientDto           "1" *-[#595959,plain]-> "unitType\n1" UnitType                
+IngredientService       "1" *-[#595959,plain]-> "ingredientRepository\n1" IngredientRepository    
+IngredientService       "1" *-[#595959,plain]-> "recipeRepository\n1" RecipeRepository        
+IngredientService        -[#595959,dashed]->  RecordNotFoundException : "«create»"
+Menu                    "1" *-[#595959,plain]-> "recipeList\n*" Recipe                  
+MenuController          "1" *-[#595959,plain]-> "menuService\n1" MenuService             
+MenuDto                 "1" *-[#595959,plain]-> "recipeList\n*" Recipe                  
+MenuService              -[#595959,dashed]->  Menu                    : "«create»"
+MenuService             "1" *-[#595959,plain]-> "menuRepository\n1" MenuRepository          
+MenuService             "1" *-[#595959,plain]-> "recipeRepository\n1" RecipeRepository        
+MenuService              -[#595959,dashed]->  RecordNotFoundException : "«create»"
+MenuService              -[#595959,dashed]->  ShoppingItem            : "«create»"
+Recipe                  "1" *-[#595959,plain]-> "ingredientList\n*" Ingredient              
+Recipe                  "1" *-[#595959,plain]-> "menuList\n*" Menu                    
+RecipeController        "1" *-[#595959,plain]-> "recipeService\n1" RecipeService           
+RecipeDto               "1" *-[#595959,plain]-> "ingredientList\n*" Ingredient              
+RecipeService            -[#595959,dashed]->  Ingredient              : "«create»"
+RecipeService           "1" *-[#595959,plain]-> "ingredientRepository\n1" IngredientRepository    
+RecipeService            -[#595959,dashed]->  Recipe                  : "«create»"
+RecipeService           "1" *-[#595959,plain]-> "recipeRepository\n1" RecipeRepository        
+RecipeService            -[#595959,dashed]->  RecordNotFoundException : "«create»"
+ShoppingItem            "1" *-[#595959,plain]-> "unitType\n1" UnitType                
+@enduml
