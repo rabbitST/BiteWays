@@ -6,48 +6,50 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="css/BiteWays.css">
 </head>
 <body>
 
 <div class="container" id="app">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
-        <a class="navbar-brand" style="margin-left: 15px;margin-right: 80px" href="#"> BiteWays API</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse " id="navbarNav">
-            <ul class="navbar-nav ">
-                <li class="nav-item">
-                    <a class="nav-link" href="Menu.html">
-                        <i class="fas fa-table"></i> Menus
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="Recipe.html">
-                        <i class="fas fa-utensils"></i> Recipes
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="Ingredient.html">
-                        <i class="fas fa-carrot"></i> Ingredients
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <nav class="navbar navbar-expand-md bg-light navbar-link">
-        <div class="navbar-collapse collapse pt-2 pt-md-0" id="navbar2">
-            <a href="/" class="navbar-brand"></a>
-            <ul class="navbar-nav">
-                <li class="nav-item active">
-                    <a class="nav-link px-2 pl-2  fw-bold" style="margin-left: 12rem" href="add-menu.html">
-                        <i class="fas fa-plus"></i> Add Menu</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+    <div style="width: 100%; text-align: center;position: relative" class="bg-secondary">
+        <a class="navbar-brand" href="index.html"><i class="fas fa-utensils"></i> BiteWays API</a>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-secondary">
+            <div class="collapse navbar-collapse " id="navbarNav">
+                <ul class="navbar-nav  d-inline-flex">
+                    <li class="nav-item">
+                        <a class="nav-link" href="Menu.html">
+                            <i class="fas fa-table"></i> Menus
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Recipe.html">
+                            <i class="fas fa-utensils"></i> Recipes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="Ingredient.html">
+                            <i class="fas fa-carrot"></i> Ingredients
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="add-menu.html">
+                            <i class="fas fa-plus-circle"></i> Add Menu
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="add-recipe.html">
+                            <i class="fas fa-plus-circle"></i> Add Recipe
+                        </a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="add-ingredient.html">
+                            <i class="fas fa-plus-circle"></i> Add Ingredient
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
     <div class="row justify-content-center mt-2">
         <div class="col-md-8">
             <div class="d-flex bg-light text-center">

@@ -82,8 +82,7 @@ public class IngredientController {
     )
     @GetMapping
     public List<IngredientDto> findAllIngredient() {
-        List<IngredientDto> ingredientDtoList=ingredientService.findAllIngredient();
-        return ingredientDtoList;
+        return ingredientService.findAllIngredient();
     }
 
     @Operation(
@@ -147,8 +146,12 @@ public class IngredientController {
     )
     @GetMapping("/unittype")
     public List<UnitType> findAllUnitType(
-    ) throws RecordNotFoundException {
-        return Arrays.stream(UnitType.values()).toList();
+    ) {
+        try {
+            return Arrays.stream(UnitType.values()).toList();
+        }catch (IllegalArgumentException iae){
+            throw new IllegalStateException("UnitType enum not found!", iae);
+        }
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

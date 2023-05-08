@@ -1,0 +1,37 @@
+.navbar-brand {
+    font-size: 1.5rem;
+    margin-left: 15px;
+    margin-right: 80px;
+    position: absolute ;
+    left: 0;
+    top: 0.5rem;
+    color: floralwhite;
+    font-weight: bold;
+}
+
+.card-body {
+    font-size: 1.2rem;
+    text-align: justify;
+}
+
+.card-body img {
+    display: block;
+    margin: auto;
+    margin-top: 20px;
+    max-width: 100%;
+    height: auto;
+}
+
+.mt-2 {
+    margin-top: 2rem;
+}
+
+#navbarNav li {
+    display: inline-block;
+    text-align: center;
+}
+
+.navbar {
+    display: inline-block;
+    text-align: center;
+}
