@@ -13,3 +13,4 @@ RUN chown -R javauser:javauser /app
 EXPOSE 8080
 USER javauser
 CMD ["java","-jar","application.jar"]
+

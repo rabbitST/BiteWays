@@ -59,20 +59,20 @@
                     <div class="card-body">
                         <form>
                             <div class="mb-3">
-                                <label for="name" class="form-label">Name</label>
+                                <label for="name" class="form-label fw-bold">Name</label>
                                 <input type="text" class="form-control" name="name" v-model="ingredient.name" required>
                                 <span v-if="!ingredient.name" id="name-warning"
                                       class="text-danger">Name is required</span>
                             </div>
                             <div class="mb-3">
-                                <label for="quantity" class="form-label">Quantity</label>
+                                <label for="quantity" class="form-label  fw-bold">Quantity</label>
                                 <input type="text" class="form-control" name="quantity" v-model="ingredient.quantity"
                                        required>
                                 <span v-if="!ingredient.quantity" id="quantity-warning"
                                       class="text-danger">Quantity is required</span>
                             </div>
                             <div class="mb-3">
-                                <label for="unitType" class="form-label">Unit Type</label>
+                                <label for="unitType" class="form-label  fw-bold">Unit Type</label>
                                 <select class="form-select" name="unitType" v-model="ingredient.unitType" required>
                                     <option value="">Select unit type</option>
                                     <option v-for="unitType in unitTypes" :value="unitType">{{ unitType }}</option>

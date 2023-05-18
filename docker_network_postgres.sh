@@ -5,4 +5,6 @@ docker run --name bitewaysdb --network  bitewaysnetwork -e POSTGRES_DB=biteways 
 
 docker build -t biteways_img .
 
-docker run -p8080:8080 --network bitewaysnetwork -e DB_URL=bitewaysdb -e DB_PORT=5432 -it biteways_img
+docker run -p8080:8080 --network bitewaysnetwork -e DB_URL=bitewaysdb -e DB_PORT=5442 -it biteways_img
+
+

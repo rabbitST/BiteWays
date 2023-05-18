@@ -88,8 +88,6 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
 <script>
     new Vue({
         el: '#app',
@@ -108,6 +106,7 @@
                 formData.forEach(field => {
                     recipe[field.name] = field.value;
                 });
+                console.log(recipe);
 
                 if (!this.recipe.name) {
                     $('#name-warning').show();
