@@ -45,6 +45,10 @@ public class Recipe {
     @Valid
     private List<Menu> menuList = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "chef_id", foreignKey = @ForeignKey(name = "FK_CHEF_RECIPE"))
+    private Chef chef;
+
     public Recipe(String name, int downloaded, String instructions, List<Ingredient> ingredientList) {
         this.name = name;
         this.downloaded = downloaded;
